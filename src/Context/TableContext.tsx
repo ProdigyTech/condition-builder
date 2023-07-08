@@ -1,6 +1,6 @@
 import { useMemo, createContext, useContext } from "react";
 
-import { useDataContext } from "./DataContext";
+import { useDataContext, DataContext } from "./DataContext";
 
 interface ITableContext {
   transformedData: [];
@@ -59,8 +59,10 @@ export const TableProvider: React.FC = ({ children }) => {
 
 export const useTableContext = (): ITableContext => {
   const context = useContext(TableContext);
-  if (!context) {
-    throw new Error("useTableContext must be used within a DataProvider");
+  const dataContext = useContext(DataContext);
+
+  if (!context || !dataContext) {
+    throw new Error("useTableContext must be used within a TableProvider and DataProvider");
   }
   return context;
 };

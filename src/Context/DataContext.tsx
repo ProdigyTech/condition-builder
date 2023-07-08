@@ -21,8 +21,7 @@ interface ValidationResult {
   validationErrors: string[];
 }
 
-
-const DataContext = createContext<IDataContext | null>(null);
+export const DataContext = createContext<IDataContext | null>(null);
 
 export const DataProvider: React.FC = ({ children }) => {
   const [url, setUrl] = useState("");
@@ -33,14 +32,14 @@ export const DataProvider: React.FC = ({ children }) => {
   const loadData = (url: string) => {
     axios
       .get(url)
-      .then(({ data: responseData}) => {
+      .then(({ data: responseData }) => {
         setIsLoading(false);
-        const {isValid, validationErrors} = isDataValid(responseData)
+        const { isValid, validationErrors } = isDataValid(responseData);
         if (isValid) {
-            setData(responseData)
+          setData(responseData);
         } else {
-            setError(validationErrors.join(""))
-            setData([])
+          setError(validationErrors.join(""));
+          setData([]);
         }
         setIsLoading(false);
       })
@@ -52,10 +51,10 @@ export const DataProvider: React.FC = ({ children }) => {
   };
 
   const isDataValid = (data: unknown[]): ValidationResult => {
-      const validationResults: ValidationResult = {
-        isValid: true,
-        validationErrors: [],
-      };
+    const validationResults: ValidationResult = {
+      isValid: true,
+      validationErrors: [],
+    };
 
     if (!data) {
       validationResults.isValid = false;
@@ -80,24 +79,27 @@ export const DataProvider: React.FC = ({ children }) => {
 
       if (!result) {
         validationResults.isValid = false;
-         validationResults.validationErrors = [
-           ...validationResults.validationErrors,
-           "Data is Missing",
-         ];
+        validationResults.validationErrors = [
+          ...validationResults.validationErrors,
+          "Data is Missing",
+        ];
       }
     }
 
     return validationResults;
   };
 
-
-
   const validate = () => {
     try {
-      new URL(url);
-      setError(null);
-      setIsLoading(true);
-      loadData(url);
+      if (url.length) {
+        new URL(url);
+        setError(null);
+        setIsLoading(true);
+        loadData(url);
+      } else {
+        setError(null);
+        setIsLoading(false);
+      }
     } catch (e) {
       console.error(e.message);
       setError(e.message);
