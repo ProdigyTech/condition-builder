@@ -15,6 +15,8 @@ export const DataLoader: React.FC = () => {
         variant="filled"
         onChange={(e) => setUrl(e.target.value)}
       />
+  
+      <span>Insert data url. Returning data MUST be an array json with each element is key/value pair</span>
       {error && <span> {error} </span>}
     </>
   );

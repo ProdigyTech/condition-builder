@@ -18,7 +18,7 @@ const Condition: React.FC = ({ leftCondition }) => {
         <Dropdown id="operator" label={`Operator`} options={ConditionOptions} />
       </Grid>
       <Grid item xs={2} sm={4} md={4}>
-        <TextField id="conditionValue" label="Filled" variant="filled" />
+        <TextField id="conditionValue" label="Value" variant="filled" />
       </Grid>
       <Button> +</Button>
     </>
