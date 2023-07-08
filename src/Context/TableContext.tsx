@@ -1,55 +1,84 @@
-import { useMemo, createContext, useContext } from "react";
+import {
+  useMemo,
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 
 import { useDataContext, DataContext } from "./DataContext";
 
 interface ITableContext {
-  transformedData: [];
+  rows: [];
   columns: [];
 }
 
 const TableContext = createContext<ITableContext | null>(null);
 
 export const TableProvider: React.FC = ({ children }) => {
-  const { isLoading, data } = useDataContext();
+  const { isLoading, data, isUrlValid } = useDataContext();
 
-  const transformedData = useMemo(() => {
-    if (isLoading) return {};
+  const [shouldDisplayGrid, setShouldDisplayGrid] = useState(false);
+
+  useEffect(() => {
+    if (isUrlValid) {
+      setShouldDisplayGrid(true);
+    } else {
+      setShouldDisplayGrid(false);
+    }
+  }, [isUrlValid]);
+
+  // rowBuilder takes params, don't use scoped values. generate function sig only once
+  const rowBuilder = useCallback((keys, values, index) => {
+    let row = { id: index };
+
+    values.forEach((val, i) => {
+      row = { ...row, [keys[i]]: val };
+    });
+
+    return row;
+  }, []);
+
+  const rows = useMemo(() => {
+    if (isLoading) return [];
 
     if (data) {
-      const formattedData = data.reduce((acc, k) => {
-        const arr = Object.entries(k);
-        // todo, nested loop, find a better way to handle this.
-        arr.forEach((kv) => {
-          const [k, v] = kv;
+      const formattedRows = data.map((k, i) => {
+        // do we need to grab the keys every time?
+        const keys = Object.keys(k);
+        const values = Object.values(k);
 
-          if (acc[k]) {
-            acc[k] = [...acc[k], v];
-          } else {
-            acc[k] = [v];
-          }
-        });
+        // assuming order is the same between obj,keys and obj.values
+        return rowBuilder(keys, values, i);
+      });
 
-        return acc;
-      }, {});
-
-      return formattedData;
+      return formattedRows;
     }
 
-    return {};
+    return [];
   }, [data, isLoading]);
 
   const columns = useMemo(() => {
-    const keys = Object.keys(transformedData);
+    if (isLoading) return [];
 
-    return keys.map((k) => ({
-      value: k,
-      label: k,
-    }));
-  }, [transformedData]);
+    if (data) {
+      const keys = Object.keys(data[0]);
+      return keys.map((k) => {
+        return {
+          field: k,
+          headerName: k,
+          width: 150,
+          editable: false,
+        };
+      });
+    }
+  }, [data]);
 
   const values = {
-    transformedData,
+    rows,
     columns,
+    shouldDisplayGrid,
   };
 
   return (
@@ -62,7 +91,9 @@ export const useTableContext = (): ITableContext => {
   const dataContext = useContext(DataContext);
 
   if (!context || !dataContext) {
-    throw new Error("useTableContext must be used within a TableProvider and DataProvider");
+    throw new Error(
+      "useTableContext must be used within a TableProvider and DataProvider"
+    );
   }
   return context;
 };

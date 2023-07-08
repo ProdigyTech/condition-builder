@@ -1,15 +1,13 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useTableContext } from "@Context/TableContext";
 export const Table: React.FC = () => {
+  const { columns, rows, shouldDisplayGrid } = useTableContext();
 
-    const { columns, transformedData } = useTableContext()
-
-    console.log(columns, transformedData)
-
-  return (
-    <div style={{ height: 300, width: "100%" }}>
-      <DataGrid rows={[]} columns={columns} />
+  return Object.keys(rows).length ? (
+    <div style={{ height: 500, width: "85%" }}>
+      <DataGrid rows={rows} columns={columns} />
     </div>
+  ) : (
+    <></>
   );
-
 };
