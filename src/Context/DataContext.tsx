@@ -16,6 +16,12 @@ interface IDataContext {
   data: any;
 }
 
+interface ValidationResult {
+  isValid: boolean;
+  validationErrors: string[];
+}
+
+
 const DataContext = createContext<IDataContext | null>(null);
 
 export const DataProvider: React.FC = ({ children }) => {
@@ -27,9 +33,15 @@ export const DataProvider: React.FC = ({ children }) => {
   const loadData = (url: string) => {
     axios
       .get(url)
-      .then(({ data: responseData }) => {
+      .then(({ data: responseData}) => {
         setIsLoading(false);
-        setData(responseData);
+        const {isValid, validationErrors} = isDataValid(responseData)
+        if (isValid) {
+            setData(responseData)
+        } else {
+            setError(validationErrors.join(""))
+            setData([])
+        }
         setIsLoading(false);
       })
       .catch((e) => {
@@ -39,13 +51,48 @@ export const DataProvider: React.FC = ({ children }) => {
       });
   };
 
-  const validateData = (data) => {
-    if (!data) throw new Error("Data is missing");
+  const isDataValid = (data: unknown[]): ValidationResult => {
+      const validationResults: ValidationResult = {
+        isValid: true,
+        validationErrors: [],
+      };
 
-    if (typeof data !== 'Array') throw new Error("Data is in the incorrect format");
+    if (!data) {
+      validationResults.isValid = false;
+      validationResults.validationErrors = [
+        ...validationResults.validationErrors,
+        "Data is Missing",
+      ];
+    }
+
+    if (!Array.isArray(data)) {
+      validationResults.isValid = false;
+      validationResults.validationErrors = [
+        ...validationResults.validationErrors,
+        `Data is in the incorrect format! Data must be an array but is an ${typeof data}`,
+      ];
+    }
+
+    if (validationResults.isValid) {
+      const result = data.every((item: any) => {
+        return typeof item === "object" && item !== null;
+      });
+
+      if (!result) {
+        validationResults.isValid = false;
+         validationResults.validationErrors = [
+           ...validationResults.validationErrors,
+           "Data is Missing",
+         ];
+      }
+    }
+
+    return validationResults;
   };
 
-  const validateURL = () => {
+
+
+  const validate = () => {
     try {
       new URL(url);
       setError(null);

@@ -2,8 +2,7 @@ import { Input } from "@Components";
 import { useDataContext } from "@Context/DataContext";
 
 export const DataLoader: React.FC = () => {
-
-    const {url = '', setUrl, validate, error} = useDataContext()
+  const { url, setUrl, validate, error } = useDataContext();
 
   return (
     <>
