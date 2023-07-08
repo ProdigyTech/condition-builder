@@ -1,8 +1,11 @@
-import { useMemo, createContext } from "react";
+import { useMemo, createContext, useContext } from "react";
 
 import { useDataContext } from "./DataContext";
 
-interface ITableContext {}
+interface ITableContext {
+  transformedData: [];
+  columns: [];
+}
 
 const TableContext = createContext<ITableContext | null>(null);
 
@@ -36,7 +39,12 @@ export const TableProvider: React.FC = ({ children }) => {
   }, [data, isLoading]);
 
   const columns = useMemo(() => {
-    return Object.keys(transformedData);
+    const keys = Object.keys(transformedData);
+
+    return keys.map((k) => ({
+      value: k,
+      label: k,
+    }));
   }, [transformedData]);
 
   const values = {
@@ -47,4 +55,12 @@ export const TableProvider: React.FC = ({ children }) => {
   return (
     <TableContext.Provider value={values}>{children}</TableContext.Provider>
   );
+};
+
+export const useTableContext = (): ITableContext => {
+  const context = useContext(TableContext);
+  if (!context) {
+    throw new Error("useTableContext must be used within a DataProvider");
+  }
+  return context;
 };

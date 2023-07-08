@@ -7,6 +7,7 @@ export const DataLoader: React.FC = () => {
   return (
     <>
       <Input
+        fullWidth
         onBlur={validate}
         value={url}
         id={`data-loader`}
