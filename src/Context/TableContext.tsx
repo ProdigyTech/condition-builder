@@ -39,9 +39,6 @@ export const TableProvider: React.FC = ({ children }) => {
     return Object.keys(transformedData);
   }, [transformedData]);
 
-
-  console.log(columns)
-
   const values = {
     transformedData,
     columns,
