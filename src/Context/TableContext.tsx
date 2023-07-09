@@ -97,7 +97,6 @@ export const TableProvider = ({ children }: TableProviderProps) => {
   }, [data]);
 
   const applyFilter = (filters) => {
-    console.log(filters);
     const filtered = originalRows.filter((item: { [x: string]: any }) => {
       return filters.every((filter) => {
         const { conditions = [] } = filter;

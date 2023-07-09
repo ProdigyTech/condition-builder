@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 import React, { useCallback, useEffect, useState, ReactElement } from "react";
 import { ConditionOptions } from "@Shared";
-import { useConditionsContext } from "@Context/ConditionBuilderContext";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from "uuid";
@@ -16,6 +15,7 @@ import { useDataContext } from "@Context/DataContext";
 import { generateDefaultConditionObject } from "./index";
 
 import { ConditionBlockProps } from "./types";
+import { useTableContext } from "@Context/TableContext";
 
 export const ConditionBlock = ({
   blockId,
@@ -23,7 +23,7 @@ export const ConditionBlock = ({
   updateConditionsArray,
   addCondition,
 }: ConditionBlockProps) => {
-  const { columns = [] } = useConditionsContext();
+  const { columns = [] } = useTableContext();
   const leftConditionOptions = columns?.map((col) => {
     return {
       value: col.field,

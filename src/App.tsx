@@ -4,7 +4,6 @@ import { ConditionBuilder } from "./Components/Conditions/";
 import { DataProvider } from "@Context/DataContext";
 import { TableProvider } from "@Context/TableContext";
 import { Grid } from "@mui/material";
-import { ConditionProvider } from "@Context/ConditionBuilderContext";
 
 function App() {
   return (
@@ -18,9 +17,7 @@ function App() {
         </Grid>
         <TableProvider>
           <Grid item xs={10}>
-            <ConditionProvider>
-              <ConditionBuilder />
-            </ConditionProvider>
+            <ConditionBuilder />
           </Grid>
           <Grid item xs={12}>
             <Table />

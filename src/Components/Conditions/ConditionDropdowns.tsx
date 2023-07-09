@@ -81,7 +81,6 @@ export const ConditionDropdown = ({
             cursor: "pointer",
           }}
           onClick={() => {
-            console.log(isLast, id);
             if (isLast) {
               addCondition({ blockId, leftConditionOptions });
             } else {

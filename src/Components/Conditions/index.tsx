@@ -1,7 +1,6 @@
 import { ConditionDropdown } from "./ConditionDropdowns";
 import { Button, Paper } from "@mui/material";
 import React, { useEffect, useState, ReactElement } from "react";
-import { useConditionsContext } from "@Context/ConditionBuilderContext";
 import { v4 as uuidv4 } from "uuid";
 import { useDataContext } from "@Context/DataContext";
 import { ConditionBlock } from "./ConditionBlock";
@@ -12,6 +11,7 @@ import {
 } from "./types";
 
 import { ConditionOptions } from "@Shared";
+import { useTableContext } from "@Context/TableContext";
 
 export const generateDefaultConditionObject = (
   pos,
@@ -50,7 +50,7 @@ const generateEmptyConditionBlock = (pos: number, leftConditionOptions) => {
 };
 
 export const ConditionBuilder: React.FC = () => {
-  const { rows, isLoading, columns = [] } = useConditionsContext();
+  const { rows, isLoading, columns = [] } = useTableContext();
   const { isReady } = useDataContext();
 
   const leftConditionOptions = columns?.map((col) => {
