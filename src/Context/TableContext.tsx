@@ -1,10 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-
 import {
   useMemo,
   createContext,
@@ -16,18 +9,22 @@ import {
 
 import { useDataContext, DataContext } from "./DataContext";
 
-interface ITableContext {
+type TableProviderProps = React.PropsWithChildren;
+
+type ITableContext = {
   rows: [];
   columns: [];
   shouldDisplayGrid: boolean;
   total: number;
   filtered: number;
-}
+  isLoading: boolean;
+  isReady: boolean;
+};
 
 export const TableContext = createContext<ITableContext | null>(null);
 
-export const TableProvider: React.FC = ({ children }) => {
-  const { isLoading, data, isUrlValid } = useDataContext();
+export const TableProvider = ({ children }: TableProviderProps) => {
+  const { isLoading, data, isUrlValid, isReady } = useDataContext();
 
   const [originalRows, setOriginalRows] = useState([]);
   const [shouldDisplayGrid, setShouldDisplayGrid] = useState(false);
@@ -100,7 +97,7 @@ export const TableProvider: React.FC = ({ children }) => {
   }, [data]);
 
   const applyFilter = (filters) => {
-    console.log(filters)
+    console.log(filters);
     const filtered = originalRows.filter((item: { [x: string]: any }) => {
       return filters.every((filter) => {
         const { conditions = [] } = filter;
@@ -157,6 +154,8 @@ export const TableProvider: React.FC = ({ children }) => {
     total: originalRows.length,
     filtered: rows.length,
     applyFilter,
+    isLoading,
+    isReady,
   };
 
   return (

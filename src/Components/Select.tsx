@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -21,8 +21,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
   label,
   id,
   onChange,
+  defaultValue,
 }) => {
-  const [selectValue, setSelectValue] = useState("");
+  const [selectValue, setSelectValue] = useState(defaultValue.value);
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectValue(event.target.value as string);

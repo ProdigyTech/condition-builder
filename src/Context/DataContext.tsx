@@ -15,6 +15,7 @@ interface IDataContext {
   validate: () => void;
   data: any;
   isUrlValid: boolean;
+  isReady: boolean;
 }
 
 interface ValidationResult {
@@ -30,6 +31,7 @@ export const DataProvider: React.FC = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<any>(null);
   const [isUrlValid, setIsUrlValid] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   const loadData = (url: string) => {
     axios
@@ -40,6 +42,7 @@ export const DataProvider: React.FC = ({ children }) => {
         if (isValid) {
           setData(responseData);
           setIsUrlValid(isValid);
+          setIsReady(true);
         } else {
           setError(validationErrors.join(" "));
           setData([]);
@@ -118,6 +121,7 @@ export const DataProvider: React.FC = ({ children }) => {
     validate,
     data,
     isUrlValid,
+    isReady,
   };
 
   return (

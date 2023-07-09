@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   useMemo,
   createContext,
@@ -16,10 +14,38 @@ interface IConditionContext {}
 const ConditionContext = createContext<IConditionContext | null>(null);
 
 export const ConditionProvider: React.FC = ({ children }) => {
+  let index;
   const { applyFilter } = useTableContext();
   const [conditionBlocks, setConditionBlock] = useState([]);
 
+  const deleteCondition = (id, blockId) => {
+    const foundCondition = conditionBlocks.find((cb, i) => {
+      if (cb.blockId == blockId) {
+        index = i;
+        return true;
+      }
+    });
 
+    if (foundCondition) {
+      const filteredConditions = foundCondition.conditions.filter((c) => {
+        if (c.id !== id) return;
+      });
+      const rebuiltConditions = conditionBlocks;
+      if (filteredConditions.length > 0) {
+        rebuiltConditions[index] = filteredConditions;
+
+        if (rebuiltConditions.length > 0) {
+          setConditionBlock(rebuiltConditions);
+        } else {
+          setConditionBlock([]);
+        }
+      } else {
+        rebuiltConditions.splice(index, 1);
+        setConditionBlock(rebuiltConditions);
+      }
+    }
+    applyFilter(conditionBlocks);
+  };
 
   const addConditionToBlock = ({ blockId, id, value, fieldId }) => {
     let foundBlockId;
@@ -31,7 +57,6 @@ export const ConditionProvider: React.FC = ({ children }) => {
         return true;
       }
     });
-
 
     if (foundBlock) {
       const individualConditionObject = foundBlock.conditions.find(
@@ -92,14 +117,16 @@ export const ConditionProvider: React.FC = ({ children }) => {
     }
 
     applyFilter(conditionBlocks);
-}
-
- 
-
+  };
 
   return (
     <ConditionContext.Provider
-      value={{ conditionBlocks, setConditionBlock, addConditionToBlock }}
+      value={{
+        conditionBlocks,
+        setConditionBlock,
+        addConditionToBlock,
+        deleteCondition,
+      }}
     >
       {children}
     </ConditionContext.Provider>
