@@ -64,6 +64,8 @@ export const ConditionBuilder: React.FC = () => {
     Array<GlobalConditionBlockData>
   >([]);
 
+
+  // this is the reason why we can't delete the last existing block. Need to rethink this. 
   useEffect(() => {
     if (!isLoading && allConditionBlocks.length == 0 && isReady) {
       setConditionBlocks([
@@ -111,9 +113,6 @@ export const ConditionBuilder: React.FC = () => {
     setConditionBlocks(newConditions);
   };
 
- 
- 
-
   const updateConditionsByBlockId = ({
     blockId,
     conditionArr,
@@ -121,17 +120,24 @@ export const ConditionBuilder: React.FC = () => {
     blockId: string;
     conditionArr: Array<ConditionsObject>;
   }) => {
-    setConditionBlocks((globalConditions) => {
-      return globalConditions.map((gc) => {
-        if (gc.blockId === blockId) {
-          return {
-            ...gc,
-            conditions: conditionArr,
-          };
-        }
-        return gc;
+    // the condition array is empty for a specific block/group, all conditions were removed, we need to remove the "block"
+    if (conditionArr.length === 0) {
+      setConditionBlocks((globalConditions) =>
+        globalConditions.filter((gc) => gc.blockId !== blockId)
+      );
+    } else {
+      setConditionBlocks((globalConditions) => {
+        return globalConditions.map((gc) => {
+          if (gc.blockId === blockId) {
+            return {
+              ...gc,
+              conditions: conditionArr,
+            };
+          }
+          return gc;
+        });
       });
-    });
+    }
   };
 
   return (

@@ -54,6 +54,20 @@ export const ConditionBlock = ({
     updateConditionsArray({ blockId, conditionArr: updatedConditions });
   };
 
+  const deleteCondition = ({ conditionIdToDelete, blockId, position }) => {
+    const updatedConditions = conditions
+      .filter((condition) => condition.id !== conditionIdToDelete)
+      .map((condition, index) => ({
+        ...condition,
+        position: index,
+      }));
+
+    updateConditionsArray({
+      blockId,
+      conditionArr: updatedConditions,
+    });
+  };
+
   // we need to update the specific condition object and keys in state
   const onDropdownChange = (value, field, id) => {
     const updatedConditions = conditions.map((dropdownConditionObject) => {
@@ -73,42 +87,43 @@ export const ConditionBlock = ({
   return (
     <>
       <Grid container>
-        {conditions.map(({ Component: Condition, id, position, ...rest }, index) => {
-          console.log({isLast: conditions.length - 1 == position}, id, conditions)
-          return (
-            <React.Fragment key={`${id}-outer`}>
-              {index !== 0 && (
-                <Grid
-                  style={{
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "1em",
-                    fontWeight: "bold",
-                  }}
-                  item
-                >
-                  {" "}
-                  OR{" "}
-                </Grid>
-              )}
-              <Condition
-                {...rest}
-                key={id}
-                id={id}
-                blockId={blockId}
-                addCondition={addCondition}
-                isLast={conditions.length - 1 == position}
-                onDropdownChange={onDropdownChange}
-                // removeCondition={removeCondition}
-                leftConditionOptions={leftConditionOptions}
-                ConditionOptions={ConditionOptions}
-                insertNewConditionToExistingBlock={
-                  insertNewConditionToExistingBlock
-                }
-              />
-            </React.Fragment>
-          );
-        })}
+        {conditions.map(
+          ({ Component: Condition, id, position, ...rest }, index) => {
+            return (
+              <React.Fragment key={`${id}-outer`}>
+                {index !== 0 && (
+                  <Grid
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "1em",
+                      fontWeight: "bold",
+                    }}
+                    item
+                  >
+                    {" "}
+                    OR{" "}
+                  </Grid>
+                )}
+                <Condition
+                  {...rest}
+                  key={id}
+                  id={id}
+                  blockId={blockId}
+                  addCondition={addCondition}
+                  isLast={conditions.length - 1 == position}
+                  onDropdownChange={onDropdownChange}
+                  deleteCondition={deleteCondition}
+                  leftConditionOptions={leftConditionOptions}
+                  ConditionOptions={ConditionOptions}
+                  insertNewConditionToExistingBlock={
+                    insertNewConditionToExistingBlock
+                  }
+                />
+              </React.Fragment>
+            );
+          }
+        )}
       </Grid>
     </>
   );

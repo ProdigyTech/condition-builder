@@ -26,6 +26,7 @@ export const ConditionDropdown = ({
   addCondition,
   onDropdownChange,
   insertNewConditionToExistingBlock,
+  deleteCondition,
   isLast,
 }) => {
   return (
@@ -80,13 +81,13 @@ export const ConditionDropdown = ({
             cursor: "pointer",
           }}
           onClick={() => {
-            console.log(isLast, id )
+            console.log(isLast, id);
             if (isLast) {
               addCondition({ blockId, leftConditionOptions });
             } else {
               insertNewConditionToExistingBlock({
                 blockId,
-                insertPosition: position+1,
+                insertPosition: position + 1,
               });
             }
           }}
@@ -99,6 +100,7 @@ export const ConditionDropdown = ({
             color: "red",
             cursor: "pointer",
           }}
+          onClick={() => deleteCondition({ conditionIdToDelete: id, blockId, position})}
         >
           Delete
         </DeleteForeverIcon>
