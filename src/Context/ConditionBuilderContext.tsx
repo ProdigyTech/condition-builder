@@ -19,7 +19,7 @@ export const ConditionProvider: React.FC = ({ children }) => {
   const { applyFilter } = useTableContext();
   const [conditionBlocks, setConditionBlock] = useState([]);
 
-  console.log(conditionBlocks);
+
 
   const addConditionToBlock = ({ blockId, id, value, fieldId }) => {
     let foundBlockId;

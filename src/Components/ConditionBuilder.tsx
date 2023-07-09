@@ -1,17 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-
 import { Dropdown } from "@Components";
 import { Grid, TextField, Button, Paper } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ConditionOptions } from "@Shared";
 import { useConditionsContext } from "@Context/ConditionBuilderContext";
 import { v4 as uuidv4 } from "uuid";
 
-const Condition: React.FC = ({ id = 0, addOr, isLast }) => {
+const Condition: React.FC = ({ id = 0, blockId, addOr, isLast }) => {
   const {
     columns = [],
     addConditionToBlock,
@@ -34,7 +28,7 @@ const Condition: React.FC = ({ id = 0, addOr, isLast }) => {
           options={leftConditionOptions}
           onChange={(e) =>
             addConditionToBlock({
-              blockId: 0,
+              blockId: blockId,
               value: e.target.value,
               fieldId: "filterOn",
               id: id,
@@ -49,7 +43,7 @@ const Condition: React.FC = ({ id = 0, addOr, isLast }) => {
           options={ConditionOptions}
           onChange={(e) => {
             addConditionToBlock({
-              blockId: 0,
+              blockId: blockId,
               value: e.target.value,
               fieldId: "operator",
               id: id,
@@ -64,7 +58,7 @@ const Condition: React.FC = ({ id = 0, addOr, isLast }) => {
           variant="filled"
           onChange={(e) =>
             addConditionToBlock({
-              blockId: 0,
+              blockId: blockId,
               value: e.target.value,
               fieldId: "conditionValue",
               id: id,
@@ -77,16 +71,12 @@ const Condition: React.FC = ({ id = 0, addOr, isLast }) => {
   );
 };
 
-export const ConditionBuilder: React.FC = () => {
-  const { conditionBlocks = [] } = useConditionsContext();
-
+const ConditionBlock: React.FC = ({ blockId }) => {
   const [conditionArr, setConditionArr] = useState([Condition]);
 
   const addOr = () => {
     setConditionArr([...conditionArr, Condition]);
   };
-
-  const addAnd = () => {};
 
   return (
     <>
@@ -97,13 +87,42 @@ export const ConditionBuilder: React.FC = () => {
             <Component
               key={id}
               id={id}
+              blockId={blockId}
               addOr={addOr}
               isLast={conditionArr.length - 1 == id}
             />
           </>
         ))}
       </Grid>
-      {/* <Button onClick={() => {}}> And +</Button> */}
+    </>
+  );
+};
+
+export const ConditionBuilder: React.FC = () => {
+  const { conditionBlocks, setConditionBlock } = useConditionsContext();
+
+  const [conditionBlockComponents, setConditionBlockComponents] = useState([
+    ConditionBlock,
+  ]);
+
+  const addNewAndBlock = useCallback(() => {
+    setConditionBlockComponents((cb) => [...cb, ConditionBlock]);
+  }, [setConditionBlock]);
+
+ 
+
+  return (
+    <>
+      {conditionBlockComponents.map((C, i) => {
+        return (
+          <>
+            <C blockId={i} />
+            {conditionBlocks.length > 0 && <span> AND </span>}
+          </>
+        );
+      })}
+
+      <Button onClick={addNewAndBlock}> And +</Button>
     </>
   );
 };

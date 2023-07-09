@@ -34,7 +34,6 @@ export const TableProvider: React.FC = ({ children }) => {
   const [filters, setFilter] = useState({ shouldFilter: false });
   const [filteredData, setFilteredData] = useState([]);
   const [rows, setRows] = useState([]);
-  console.log(filteredData);
 
   useEffect(() => {
     if (isUrlValid) {
@@ -101,13 +100,15 @@ export const TableProvider: React.FC = ({ children }) => {
   }, [data]);
 
   const applyFilter = (filters) => {
+    console.log(filters)
     const filtered = originalRows.filter((item: { [x: string]: any }) => {
-      return filters.every((filter: { conditions: any[] }) => {
-        return filter.conditions.some((f) => {
+      return filters.every((filter) => {
+        const { conditions = [] } = filter;
+        return conditions.some((f) => {
           const { filterOn, operator, conditionValue } = f;
           const itemValue = item[filterOn];
 
-          if (!conditionValue.length) {
+          if (!conditionValue?.length) {
             return true;
           }
 
