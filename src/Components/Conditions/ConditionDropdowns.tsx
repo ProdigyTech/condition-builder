@@ -7,24 +7,26 @@ import {
   Container,
 } from "@mui/material";
 
-//TODO Update Imports 
+//TODO Update Imports
 import { useCallback, useEffect, useState } from "react";
 import { ConditionOptions } from "@Shared";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
 import { Dropdown } from "../Select";
 
-
 //Todo: Add types
 
 export const ConditionDropdown = ({
-  id = 0,
+  id,
   blockId,
   position,
   filterOn,
   operator,
   leftConditionOptions,
-  addOrCondition,
+  addCondition,
+  onDropdownChange,
+  insertNewConditionToExistingBlock,
+  isLast,
 }) => {
   return (
     <>
@@ -39,7 +41,7 @@ export const ConditionDropdown = ({
           label={`Left Condition`}
           options={leftConditionOptions}
           defaultValue={filterOn}
-          onChange={() => {}} //TODO: NEED TO ADD new value to existing condition
+          onChange={(e) => onDropdownChange(e.target.value, "filterOn", id)}
         />
       </Grid>
       <Grid
@@ -53,7 +55,7 @@ export const ConditionDropdown = ({
           label={`Operator`}
           options={ConditionOptions}
           defaultValue={operator}
-          onChange={() => {}} //TODO: NEED TO ADD new value to existing condition
+          onChange={(e) => onDropdownChange(e.target.value, "operator", id)} //TODO: NEED TO ADD new value to existing condition
         />
       </Grid>
       <Grid
@@ -66,7 +68,9 @@ export const ConditionDropdown = ({
           id="conditionValue"
           label="Value"
           variant="filled"
-          onChange={() => {}} //TODO: NEED TO ADD new value to existing condition
+          onChange={(e) =>
+            onDropdownChange(e.target.value, "conditionValue", id)
+          } //TODO: NEED TO ADD new value to existing condition
         />
         <AddIcon
           style={{
@@ -75,7 +79,17 @@ export const ConditionDropdown = ({
             color: "#1976d2",
             cursor: "pointer",
           }}
-          onClick={() => addOrCondition({ blockId })}
+          onClick={() => {
+            console.log(isLast, id )
+            if (isLast) {
+              addCondition({ blockId, leftConditionOptions });
+            } else {
+              insertNewConditionToExistingBlock({
+                blockId,
+                insertPosition: position+1,
+              });
+            }
+          }}
         />
 
         <DeleteForeverIcon

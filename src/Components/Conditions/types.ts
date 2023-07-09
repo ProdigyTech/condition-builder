@@ -39,7 +39,7 @@ export type DefaultConditionObjectType = {
 };
 
 export type ConditionBlockProps = {
-    blockId: number;
+    blockId: string;
     conditions: Array<ConditionsObject>;
     updateConditionsArray: UpdateConditionsArrayFunc;
     position: number;

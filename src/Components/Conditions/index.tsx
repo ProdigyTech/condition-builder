@@ -6,20 +6,20 @@ import { v4 as uuidv4 } from "uuid";
 import { useDataContext } from "@Context/DataContext";
 import { ConditionBlock } from "./ConditionBlock";
 import {
-  operatorType,
-  DefaultConditionObjectType,
   GlobalConditionBlockData,
   ConditionsObject,
   AddConditionFunc,
 } from "./types";
 
+import { ConditionOptions } from "@Shared";
+
 export const generateDefaultConditionObject = (
-  pos: number,
-  leftConditionOptions: Array<operatorType>,
-  ConditionOptions: Array<operatorType>,
-  blockId: string
+  pos,
+  leftConditionOptions,
+  ConditionOptions,
+  blockId
 ) => {
-  const result: DefaultConditionObjectType = {
+  const result = {
     Component: ConditionDropdown,
     id: uuidv4(),
     blockId: blockId,
@@ -38,7 +38,12 @@ const generateEmptyConditionBlock = (pos: number, leftConditionOptions) => {
     blockId: newBlockId,
     position: pos,
     conditions: [
-      generateDefaultConditionObject(0, leftConditionOptions, newBlockId),
+      generateDefaultConditionObject(
+        0,
+        leftConditionOptions,
+        ConditionOptions,
+        newBlockId
+      ),
     ],
     Component: ConditionBlock,
   };
@@ -94,6 +99,7 @@ export const ConditionBuilder: React.FC = () => {
             generateDefaultConditionObject(
               condition.conditions.length,
               leftConditionOptions,
+              ConditionOptions,
               blockId
             ),
           ],
@@ -104,6 +110,9 @@ export const ConditionBuilder: React.FC = () => {
 
     setConditionBlocks(newConditions);
   };
+
+ 
+ 
 
   const updateConditionsByBlockId = ({
     blockId,
