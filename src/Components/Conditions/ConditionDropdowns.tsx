@@ -27,7 +27,7 @@ export const ConditionDropdown = ({
   filterOn,
   operator,
   leftConditionOptions,
-  addCondition,
+  addOrCondition,
 }) => {
   return (
     <>
@@ -78,7 +78,7 @@ export const ConditionDropdown = ({
             color: "#1976d2",
             cursor: "pointer",
           }}
-          onClick={() => addCondition({ blockId })}
+          onClick={() => addOrCondition({ blockId })}
         />
 
         <DeleteForeverIcon

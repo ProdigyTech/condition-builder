@@ -1,15 +1,11 @@
 import { ConditionDropdown } from "./Conditions/ConditionDropdowns";
-import {
-  Button,
-  Paper,
-} from "@mui/material";
+import { Button, Paper } from "@mui/material";
 import { useEffect, useState, ReactElement } from "react";
 import { ConditionOptions } from "@Shared";
 import { useConditionsContext } from "@Context/ConditionBuilderContext";
 import { v4 as uuidv4 } from "uuid";
 import { useDataContext } from "@Context/DataContext";
 import { ConditionBlock } from "./Conditions/ConditionBlock";
-
 
 type ConditionsObject = {
   Component: ReactElement;
@@ -48,8 +44,6 @@ type DefaultConditionObjectType = {
   conditionValue: string;
 };
 
-
-
 const generateEmptyConditionBlock = (pos: number, leftConditionOptions) => {
   const newBlockId = uuidv4();
   return {
@@ -62,7 +56,7 @@ const generateEmptyConditionBlock = (pos: number, leftConditionOptions) => {
   };
 };
 
-const generateDefaultConditionObject = (
+export const generateDefaultConditionObject = (
   pos: number,
   leftConditionOptions: Array<operatorType>,
   blockId: string
@@ -111,14 +105,17 @@ export const ConditionBuilder: React.FC = () => {
     leftConditionOptions,
   ]);
 
-  const addNewAndBlock = (pos: number) => {
+  const addNewAndBlock = (pos: number, leftConditionOptions) => {
     setConditionBlocks((existing) => [
       ...existing,
-      generateEmptyConditionBlock(pos),
+      generateEmptyConditionBlock(pos, leftConditionOptions),
     ]);
   };
 
-  const addNewConditionToExistingBlock: AddConditionFunc = ({ blockId }) => {
+  const addNewConditionToExistingBlock: AddConditionFunc = ({
+    blockId,
+    leftConditionOptions,
+  }) => {
     const newConditions = allConditionBlocks.map((condition) => {
       let result = condition;
       if (condition.blockId === blockId) {
@@ -140,22 +137,26 @@ export const ConditionBuilder: React.FC = () => {
     setConditionBlocks(newConditions);
   };
 
-  const updateConditionsArray = ({ blockId, conditionArr }) => {
-    /// TODO: can't i just do all of this in a map?
-    const index = allConditionBlocks.findIndex((singularBlock) => {
-      singularBlock.blockId === blockId;
+  const updateConditionsByBlockId = ({
+    blockId,
+    conditionArr,
+  }: {
+    blockId: string;
+    conditionArr: Array<ConditionsObject>;
+  }) => {
+    setConditionBlocks((globalConditions) => {
+      return globalConditions.map((gc) => {
+        if (gc.blockId === blockId) {
+          return {
+            ...gc,
+            conditions: conditionArr,
+          };
+        }
+        return gc;
+      });
     });
-
-    if (index) {
-      const updatedBlock = {
-        ...allConditionBlocks[index],
-        conditions: conditionArr,
-      };
-
-      const updatedConditions = [...allConditionBlocks];
-      updatedConditions[index] = updatedBlock;
-    }
   };
+
 
   return (
     <>
@@ -177,7 +178,7 @@ export const ConditionBuilder: React.FC = () => {
                       blockId={blockId}
                       conditions={conditions}
                       addCondition={addNewConditionToExistingBlock}
-                      updateConditionsArray={updateConditionsArray}
+                      updateConditionsArray={updateConditionsByBlockId}
                     />
 
                     {allConditionBlocks.length > 0 && <span> AND </span>}
@@ -186,7 +187,11 @@ export const ConditionBuilder: React.FC = () => {
               }
             )}
 
-            <Button onClick={() => addNewAndBlock(allConditionBlocks.length)}>
+            <Button
+              onClick={() =>
+                addNewAndBlock(allConditionBlocks.length, leftConditionOptions)
+              }
+            >
               {allConditionBlocks.length === 0 ? "Add Condition + " : "And +"}
             </Button>
           </>

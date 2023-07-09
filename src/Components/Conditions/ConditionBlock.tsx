@@ -14,6 +14,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from "uuid";
 import { useDataContext } from "@Context/DataContext";
+import { generateDefaultConditionObject } from "../ConditionBuilder";
 
 
 type ConditionsObject = {
@@ -43,10 +44,6 @@ type UpdateConditionsArrayFunc = (arg: {
 
 type AddConditionFunc = (arg: { blockId: string }) => void;
 
-
-
-
-
 export const ConditionBlock = ({
   blockId,
   conditions = [],
@@ -62,12 +59,16 @@ export const ConditionBlock = ({
     };
   });
 
-  const addOr = () => {
+  const addOrCondition = () => {
     updateConditionsArray({
       blockId,
       conditionArr: [
         ...conditions,
-        generateDefaultConditionObject(conditionArr.length),
+        generateDefaultConditionObject(
+          conditions.length,
+          leftConditionOptions,
+          blockId
+        ),
       ],
     });
   };
@@ -96,7 +97,7 @@ export const ConditionBlock = ({
                 {...rest}
                 key={id}
                 blockId={blockId}
-                addOr={addOr}
+                addOrCondition={addOrCondition}
                 isLast={conditions.length - 1 == position}
                 // removeCondition={removeCondition}
                 leftConditionOptions={leftConditionOptions}
