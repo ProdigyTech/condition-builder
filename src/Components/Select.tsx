@@ -10,41 +10,49 @@ interface Option {
   label: string;
 }
 
-
 interface DropdownProps {
   options: Option[];
   label: string;
   id: string;
 }
 
-export const Dropdown: React.FC<DropdownProps> = ({ options, label, id }) => {
+export const Dropdown: React.FC<DropdownProps> = ({
+  options,
+  label,
+  id,
+  onChange,
+}) => {
   const [selectValue, setSelectValue] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectValue(event.target.value as string);
+
+    if (typeof onChange === "function") {
+      onChange(event);
+    }
   };
 
   return (
     <Box sx={{ minWidth: 120 }}>
-    <FormControl fullWidth>
-      <InputLabel id="demo-simple-select-label">{label}</InputLabel>
-      <Select
-        labelId="demo-simple-select-label"
-        id={id}
-        value={selectValue}
-        label={label}
-        onChange={handleChange}
-        autoWidth
-      >
-        {options.map((option, index) => {
-          return (
-            <MenuItem value={option.value} key={`${option.value}-${index}`}>
-              {option.label}
-            </MenuItem>
-          );
-        })}
-      </Select>
-    </FormControl>
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">{label}</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id={id}
+          value={selectValue}
+          label={label}
+          onChange={handleChange}
+          autoWidth
+        >
+          {options.map((option, index) => {
+            return (
+              <MenuItem value={option.value} key={`${option.value}-${index}`}>
+                {option.label}
+              </MenuItem>
+            );
+          })}
+        </Select>
+      </FormControl>
     </Box>
   );
 };
