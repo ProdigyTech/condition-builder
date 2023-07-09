@@ -1,172 +1,54 @@
-import { Dropdown } from "@Components";
+import { ConditionDropdown } from "./Conditions/ConditionDropdowns";
 import {
-  Grid,
-  TextField,
   Button,
   Paper,
-  Skeleton,
-  Container,
 } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState, ReactElement } from "react";
 import { ConditionOptions } from "@Shared";
 import { useConditionsContext } from "@Context/ConditionBuilderContext";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from "uuid";
 import { useDataContext } from "@Context/DataContext";
+import { ConditionBlock } from "./Conditions/ConditionBlock";
 
-// type ConditionBlockProp = {
-//    blockId: number
-//   conditions:
-//   updateConditionsArray,
-//   position,
-//   addCondition,
-// }
 
-// type Conditions
-
-const Condition = ({
-  id = 0,
-  blockId,
-  position,
-  filterOn,
-  operator,
-  leftConditionOptions,
-  addCondition,
-}) => {
-  return (
-    <>
-      <Grid
-        item
-        xs={position == 0 ? 4 : 3}
-        sm={position == 0 ? 4 : 3}
-        md={position == 0 ? 4 : 3}
-      >
-        <Dropdown
-          id="filterOn"
-          label={`Left Condition`}
-          options={leftConditionOptions}
-          defaultValue={filterOn}
-          onChange={() => {}} //TODO: NEED TO ADD new value to existing condition
-        />
-      </Grid>
-      <Grid
-        item
-        xs={position == 0 ? 4 : 3}
-        sm={position == 0 ? 4 : 3}
-        md={position == 0 ? 4 : 3}
-      >
-        <Dropdown
-          id="operator"
-          label={`Operator`}
-          options={ConditionOptions}
-          defaultValue={operator}
-          onChange={() => {}} //TODO: NEED TO ADD new value to existing condition
-        />
-      </Grid>
-      <Grid
-        item
-        xs={position == 0 ? 4 : 3}
-        sm={position == 0 ? 4 : 3}
-        md={position == 0 ? 4 : 3}
-      >
-        <TextField
-          id="conditionValue"
-          label="Value"
-          variant="filled"
-          onChange={() => {}} //TODO: NEED TO ADD new value to existing condition
-        />
-        <AddIcon
-          style={{
-            padding: ".5em",
-            fontSize: "2em",
-            color: "#1976d2",
-            cursor: "pointer",
-          }}
-          onClick={() => addCondition({ blockId })}
-        />
-
-        <DeleteForeverIcon
-          style={{
-            padding: ".5em",
-            fontSize: "2em",
-            color: "red",
-            cursor: "pointer",
-          }}
-        >
-          Delete
-        </DeleteForeverIcon>
-      </Grid>
-    </>
-  );
+type ConditionsObject = {
+  Component: ReactElement;
+  id: string;
+  blockId: string;
+  position: number;
+  filterOn: string;
+  operator: string;
+  conditionValue: string;
 };
 
-const ConditionBlock: React.FC = ({
-  blockId,
-  conditions = [],
-  updateConditionsArray,
-  position,
-  addCondition,
-}) => {
-  const { columns = [] } = useConditionsContext();
-  const leftConditionOptions = columns?.map((col) => {
-    return {
-      value: col.field,
-      label: col.field,
-    };
-  });
+type GlobalConditionBlockData = {
+  blockId: string;
+  position: number;
+  conditions: Array<ConditionsObject>;
+  Component: typeof ConditionBlock;
+};
+
+type filterOnType = {
+  label: string;
+  value: string;
+};
+
+type operatorType = {
+  label: string;
+  value: string;
+};
+
+type DefaultConditionObjectType = {
+  Component: ReactElement;
+  id: string;
+  blockId: string;
+  position: number;
+  filterOn: filterOnType;
+  operator: operatorType;
+  conditionValue: string;
+};
 
 
-
-  const addOr = () => {
-    updateConditionsArray({
-      blockId,
-      conditionArr: [
-        ...conditions,
-        generateDefaultConditionObject(conditionArr.length),
-      ],
-    });
-  }
-
-
-    return (
-      <>
-        <Grid container>
-          {conditions.map(({ Component: Condition, id, ...rest }, index) => {
-            return (
-              <>
-                {index !== 0 && (
-                  <Grid
-                    style={{
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "1em",
-                      fontWeight: "bold",
-                    }}
-                    item
-                  >
-                    {" "}
-                    OR{" "}
-                  </Grid>
-                )}
-                <Condition
-                  {...rest}
-                  key={id}
-                  blockId={blockId}
-                  addOr={addOr}
-                  isLast={conditions.length - 1 == position}
-                  // removeCondition={removeCondition}
-                  leftConditionOptions={leftConditionOptions}
-                  ConditionOptions={ConditionOptions}
-                  addCondition={addCondition}
-                />
-              </>
-            );
-          })}
-        </Grid>
-      </>
-    );
-  };
 
 const generateEmptyConditionBlock = (pos: number, leftConditionOptions) => {
   const newBlockId = uuidv4();
@@ -182,11 +64,11 @@ const generateEmptyConditionBlock = (pos: number, leftConditionOptions) => {
 
 const generateDefaultConditionObject = (
   pos: number,
-  leftConditionOptions,
-  blockId
+  leftConditionOptions: Array<operatorType>,
+  blockId: string
 ) => {
-  return {
-    Component: Condition,
+  const result: DefaultConditionObjectType = {
+    Component: ConditionDropdown,
     id: uuidv4(),
     blockId: blockId,
     position: pos,
@@ -194,6 +76,8 @@ const generateDefaultConditionObject = (
     operator: ConditionOptions[0],
     conditionValue: "",
   };
+
+  return result;
 };
 
 export const ConditionBuilder: React.FC = () => {
@@ -207,10 +91,11 @@ export const ConditionBuilder: React.FC = () => {
     };
   });
 
+  const [allConditionBlocks, setConditionBlocks] = useState<
+    Array<GlobalConditionBlockData>
+  >([]);
 
-
-  const [allConditionBlocks, setConditionBlocks] = useState([]);
-
+  console.log(allConditionBlocks);
 
   useEffect(() => {
     if (!isLoading && allConditionBlocks.length == 0 && isReady) {
@@ -233,10 +118,11 @@ export const ConditionBuilder: React.FC = () => {
     ]);
   };
 
-  const addNewConditionToExistingBlock = ({ blockId }) => {
+  const addNewConditionToExistingBlock: AddConditionFunc = ({ blockId }) => {
     const newConditions = allConditionBlocks.map((condition) => {
+      let result = condition;
       if (condition.blockId === blockId) {
-        return {
+        result = {
           ...condition,
           conditions: [
             ...condition.conditions,
@@ -248,7 +134,7 @@ export const ConditionBuilder: React.FC = () => {
           ],
         };
       }
-      return condition;
+      return result;
     });
 
     setConditionBlocks(newConditions);
@@ -283,7 +169,6 @@ export const ConditionBuilder: React.FC = () => {
           <>
             {allConditionBlocks.map(
               ({ blockId, Component, conditions, ...rest }) => {
-
                 return (
                   <>
                     <Component
