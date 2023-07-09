@@ -2,7 +2,7 @@ import { Input } from "@Components";
 import { useDataContext } from "@Context/DataContext";
 
 export const DataLoader: React.FC = () => {
-  const { url, setUrl, validate, error } = useDataContext();
+  const { url, setUrl, validate, error, setIsDirty, isDirty } = useDataContext();
 
   return (
     <>
@@ -13,10 +13,19 @@ export const DataLoader: React.FC = () => {
         id={`data-loader`}
         label="URL"
         variant="filled"
-        onChange={(e) => setUrl(e.target.value)}
+        onChange={(e) => {
+          setUrl(e.target.value);
+
+          if (!isDirty) {
+            setIsDirty(true);
+          }
+        }}
       />
-  
-      <span>Insert data url. Returning data MUST be an array json with each element is key/value pair</span>
+
+      <span>
+        Insert data url. Returning data MUST be an array json with each element
+        is key/value pair
+      </span>
       {error && <span> {error} </span>}
     </>
   );

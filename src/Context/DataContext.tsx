@@ -16,11 +16,13 @@ interface IDataContext {
   data: any;
   isUrlValid: boolean;
   isReady: boolean;
+  isDirty: boolean;
+  setIsDirty: () => void;
 }
 
 interface ValidationResult {
   isValid: boolean;
-  validationErrors: string[];
+  validationError: string;
 }
 
 export const DataContext = createContext<IDataContext | null>(null);
@@ -32,6 +34,7 @@ export const DataProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<any>(null);
   const [isUrlValid, setIsUrlValid] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
 
   const loadData = (url: string) => {
     axios
@@ -44,15 +47,18 @@ export const DataProvider: React.FC = ({ children }) => {
           setIsUrlValid(isValid);
           setIsReady(true);
         } else {
-          setError(validationErrors.join(" "));
+          setError(validationErrors);
           setData([]);
           setIsUrlValid(false);
         }
         setIsLoading(false);
+        setIsDirty(false);
       })
       .catch((e) => {
         console.error(e.message);
         setError(e.message);
+        setData(null);
+        setIsReady(false);
         setIsLoading(false);
       });
   };
@@ -60,23 +66,20 @@ export const DataProvider: React.FC = ({ children }) => {
   const isDataValid = (data: unknown[]): ValidationResult => {
     const validationResults: ValidationResult = {
       isValid: true,
-      validationErrors: [],
+      validationError: "",
     };
 
     if (!data) {
       validationResults.isValid = false;
-      validationResults.validationErrors = [
-        ...validationResults.validationErrors,
-        "Data is Missing",
-      ];
+      validationResults.validationError = "Data is Missing";
+      return validationResults;
     }
 
     if (!Array.isArray(data)) {
       validationResults.isValid = false;
-      validationResults.validationErrors = [
-        ...validationResults.validationErrors,
-        `Data is in the incorrect format! Data must be an array but is an ${typeof data}`,
-      ];
+      validationResults.validationError = `Data is in the incorrect format! Data must be an array but is an ${typeof data}`;
+
+      return validationResults;
     }
 
     if (validationResults.isValid) {
@@ -86,10 +89,8 @@ export const DataProvider: React.FC = ({ children }) => {
 
       if (!result) {
         validationResults.isValid = false;
-        validationResults.validationErrors = [
-          ...validationResults.validationErrors,
-          "Data is Missing",
-        ];
+        validationResults.validationError = "Data is Missing";
+        return validationResults;
       }
     }
 
@@ -98,7 +99,7 @@ export const DataProvider: React.FC = ({ children }) => {
 
   const validate = () => {
     try {
-      if (url.length) {
+      if (url.length && isDirty) {
         new URL(url);
         setError(null);
         setIsLoading(true);
@@ -108,7 +109,6 @@ export const DataProvider: React.FC = ({ children }) => {
         setIsLoading(false);
       }
     } catch (e) {
-      console.error(e.message);
       setError(e.message);
     }
   };
@@ -122,6 +122,8 @@ export const DataProvider: React.FC = ({ children }) => {
     data,
     isUrlValid,
     isReady,
+    isDirty,
+    setIsDirty,
   };
 
   return (

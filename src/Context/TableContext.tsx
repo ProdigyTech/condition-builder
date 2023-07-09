@@ -117,12 +117,12 @@ export const TableProvider = ({ children }: TableProviderProps) => {
                   );
                 }
 
-              case "2": // Greater than
+              case "2": // Greater than TODO: Validation, only numbers
                 return (
                   Number.parseInt(itemValue) > Number.parseInt(conditionValue)
                 );
 
-              case "3": // Less than
+              case "3": // Less than TODO: Validation, only numbers
                 return (
                   Number.parseInt(itemValue) < Number.parseInt(conditionValue)
                 );
