@@ -7,7 +7,7 @@ import {
   useCallback,
 } from "react";
 
-import { useDataContext, DataContext } from "./DataContext";
+import { useDataContext } from "./DataContext";
 
 type TableProviderProps = React.PropsWithChildren;
 
@@ -21,15 +21,23 @@ type ITableContext = {
   isReady: boolean;
 };
 
+// TODO: move to utils.
+const rowBuilder = (keys, values, index) => {
+  let row = { id: index };
+
+  values.forEach((val, i) => {
+    row = { ...row, [keys[i]]: val };
+  });
+
+  return row;
+};
+
 export const TableContext = createContext<ITableContext | null>(null);
 
 export const TableProvider = ({ children }: TableProviderProps) => {
   const { isLoading, data, isUrlValid, isReady } = useDataContext();
-
   const [originalRows, setOriginalRows] = useState([]);
   const [shouldDisplayGrid, setShouldDisplayGrid] = useState(false);
-  const [filters, setFilter] = useState({ shouldFilter: false });
-  const [filteredData, setFilteredData] = useState([]);
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
@@ -39,17 +47,6 @@ export const TableProvider = ({ children }: TableProviderProps) => {
       setShouldDisplayGrid(false);
     }
   }, [isUrlValid]);
-
-  // rowBuilder takes params, don't use scoped values. generate function sig only once
-  const rowBuilder = useCallback((keys, values, index) => {
-    let row = { id: index };
-
-    values.forEach((val, i) => {
-      row = { ...row, [keys[i]]: val };
-    });
-
-    return row;
-  }, []);
 
   const formatRows = useMemo(() => {
     if (isLoading) return [];
@@ -68,17 +65,14 @@ export const TableProvider = ({ children }: TableProviderProps) => {
     }
 
     return [];
-  }, [data, isLoading, rowBuilder]);
+  }, [data, isLoading]);
 
   useEffect(() => {
     if (!originalRows.length) {
       setOriginalRows(formatRows);
     }
-  }, [formatRows]);
-
-  useEffect(() => {
     setRows(formatRows);
-  }, [formatRows]);
+  }, [formatRows, originalRows.length]);
 
   const columns = useMemo(() => {
     if (isLoading) return [];
@@ -94,57 +88,64 @@ export const TableProvider = ({ children }: TableProviderProps) => {
         };
       });
     }
-  }, [data]);
+  }, [data, isLoading]);
 
-  const applyFilter = (filters) => {
-    const filtered = originalRows.filter((item: { [x: string]: any }) => {
-      return filters.every((filter) => {
-        const { conditions = [] } = filter;
-        return conditions.some((f) => {
-          const { filterOn, operator, conditionValue } = f;
-          const itemValue = item[filterOn];
+  const applyFilter = useCallback(
+    (filters) => {
+      const filtered = originalRows.filter((item: { [x: string]: any }) => {
+        return filters.every((filter) => {
+          const { conditions = [] } = filter;
 
-          if (!conditionValue?.length) {
-            return true;
-          }
+          return conditions.some((f) => {
+            const { filterOn, operator, conditionValue } = f;
+            const itemValue = item[filterOn.value];
 
-          switch (operator) {
-            case "1": // Equals
-              if (Number.parseInt(conditionValue)) {
-                return (
-                  Number.parseInt(itemValue) === Number.parseInt(conditionValue)
-                );
-              } else {
-                return itemValue.toLowerCase() === conditionValue.toLowerCase();
-              }
-
-            case "2": // Greater than
-              return (
-                Number.parseInt(itemValue) > Number.parseInt(conditionValue)
-              );
-
-            case "3": // Less than
-              return (
-                Number.parseInt(itemValue) < Number.parseInt(conditionValue)
-              );
-
-            case "4": // Contain
-              return itemValue.includes(conditionValue);
-            case "5": // Not Contain
-              return !itemValue.includes(conditionValue);
-            case "6": // Regex
-              const regex = new RegExp(conditionValue);
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-              return regex.test(itemValue);
-            default:
+            if (!conditionValue?.length) {
               return true;
-          }
+            }
+
+            switch (operator?.value) {
+              case "1": // Equals
+                if (Number.parseInt(conditionValue)) {
+                  return (
+                    Number.parseInt(itemValue) ===
+                    Number.parseInt(conditionValue)
+                  );
+                } else {
+                  return (
+                    itemValue.toLowerCase() === conditionValue.toLowerCase()
+                  );
+                }
+
+              case "2": // Greater than
+                return (
+                  Number.parseInt(itemValue) > Number.parseInt(conditionValue)
+                );
+
+              case "3": // Less than
+                return (
+                  Number.parseInt(itemValue) < Number.parseInt(conditionValue)
+                );
+
+              case "4": // Contain
+                return itemValue.includes(conditionValue);
+              case "5": // Not Contain
+                return !itemValue.includes(conditionValue);
+              case "6": // Regex
+                const regex = new RegExp(conditionValue);
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                return regex.test(itemValue);
+              default:
+                return true;
+            }
+          });
         });
       });
-    });
 
-    setRows(filtered);
-  };
+      setRows(filtered);
+    },
+    [originalRows]
+  );
 
   const values = {
     rows: rows,
@@ -164,12 +165,9 @@ export const TableProvider = ({ children }: TableProviderProps) => {
 
 export const useTableContext = (): ITableContext => {
   const context = useContext(TableContext);
-  const dataContext = useContext(DataContext);
 
-  if (!context || !dataContext) {
-    throw new Error(
-      "useTableContext must be used within a TableProvider and DataProvider"
-    );
+  if (!context) {
+    throw new Error("useTableContext must be used within a TableProvider");
   }
   return context;
 };

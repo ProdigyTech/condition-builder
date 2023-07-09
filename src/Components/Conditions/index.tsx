@@ -1,6 +1,6 @@
 import { ConditionDropdown } from "./ConditionDropdowns";
 import { Button, Paper } from "@mui/material";
-import React, { useEffect, useState, ReactElement } from "react";
+import React, { useEffect, useState, ReactElement, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useDataContext } from "@Context/DataContext";
 import { ConditionBlock } from "./ConditionBlock";
@@ -50,7 +50,7 @@ const generateEmptyConditionBlock = (pos: number, leftConditionOptions) => {
 };
 
 export const ConditionBuilder: React.FC = () => {
-  const { rows, isLoading, columns = [] } = useTableContext();
+  const { rows, isLoading, columns = [], applyFilter } = useTableContext();
   const { isReady } = useDataContext();
 
   const leftConditionOptions = columns?.map((col) => {
@@ -64,8 +64,7 @@ export const ConditionBuilder: React.FC = () => {
     Array<GlobalConditionBlockData>
   >([]);
 
-
-  // this is the reason why we can't delete the last existing block. Need to rethink this. 
+  // this is the reason why we can't delete the last existing block. Need to rethink this.
   useEffect(() => {
     if (!isLoading && allConditionBlocks.length == 0 && isReady) {
       setConditionBlocks([
@@ -79,6 +78,12 @@ export const ConditionBuilder: React.FC = () => {
     isReady,
     leftConditionOptions,
   ]);
+
+  useEffect(() => {
+    if (isReady && allConditionBlocks.length) {
+      applyFilter(allConditionBlocks);
+    }
+  }, [allConditionBlocks, isReady]);
 
   const addNewAndBlock = (pos: number, leftConditionOptions) => {
     setConditionBlocks((existing) => [
@@ -122,9 +127,9 @@ export const ConditionBuilder: React.FC = () => {
   }) => {
     // the condition array is empty for a specific block/group, all conditions were removed, we need to remove the "block"
     if (conditionArr.length === 0) {
-      setConditionBlocks((globalConditions) =>
-        globalConditions.filter((gc) => gc.blockId !== blockId)
-      );
+      setConditionBlocks((globalConditions) => {
+        return globalConditions.filter((gc) => gc.blockId !== blockId);
+      });
     } else {
       setConditionBlocks((globalConditions) => {
         return globalConditions.map((gc) => {
@@ -142,7 +147,7 @@ export const ConditionBuilder: React.FC = () => {
 
   return (
     <>
-      {rows.length > 0 ? (
+      {isReady ? (
         <Paper
           elevation={2}
           style={{

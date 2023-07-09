@@ -1,19 +1,7 @@
-import {
-  Grid,
-  TextField,
-  Button,
-  Paper,
-  Skeleton,
-  Container,
-} from "@mui/material";
-import React, { useCallback, useEffect, useState, ReactElement } from "react";
+import { Grid } from "@mui/material";
+import React from "react";
 import { ConditionOptions } from "@Shared";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import AddIcon from "@mui/icons-material/Add";
-import { v4 as uuidv4 } from "uuid";
-import { useDataContext } from "@Context/DataContext";
 import { generateDefaultConditionObject } from "./index";
-
 import { ConditionBlockProps } from "./types";
 import { useTableContext } from "@Context/TableContext";
 
@@ -22,6 +10,7 @@ export const ConditionBlock = ({
   conditions = [],
   updateConditionsArray,
   addCondition,
+  applySelectedFilters,
 }: ConditionBlockProps) => {
   const { columns = [] } = useTableContext();
   const leftConditionOptions = columns?.map((col) => {
