@@ -14,7 +14,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from "uuid";
 import { useDataContext } from "@Context/DataContext";
-import { generateDefaultConditionObject } from "../ConditionBuilder";
+import { generateDefaultConditionObject } from "./index";
 
 
 type ConditionsObject = {

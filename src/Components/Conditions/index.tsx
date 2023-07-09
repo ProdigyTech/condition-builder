@@ -1,11 +1,10 @@
-import { ConditionDropdown } from "./Conditions/ConditionDropdowns";
+import { ConditionDropdown } from "./ConditionDropdowns";
 import { Button, Paper } from "@mui/material";
 import { useEffect, useState, ReactElement } from "react";
-import { ConditionOptions } from "@Shared";
 import { useConditionsContext } from "@Context/ConditionBuilderContext";
 import { v4 as uuidv4 } from "uuid";
 import { useDataContext } from "@Context/DataContext";
-import { ConditionBlock } from "./Conditions/ConditionBlock";
+import { ConditionBlock } from "./ConditionBlock";
 
 type ConditionsObject = {
   Component: ReactElement;
@@ -44,21 +43,10 @@ type DefaultConditionObjectType = {
   conditionValue: string;
 };
 
-const generateEmptyConditionBlock = (pos: number, leftConditionOptions) => {
-  const newBlockId = uuidv4();
-  return {
-    blockId: newBlockId,
-    position: pos,
-    conditions: [
-      generateDefaultConditionObject(0, leftConditionOptions, newBlockId),
-    ],
-    Component: ConditionBlock,
-  };
-};
-
 export const generateDefaultConditionObject = (
   pos: number,
   leftConditionOptions: Array<operatorType>,
+  ConditionOptions: Array<operatorType>,
   blockId: string
 ) => {
   const result: DefaultConditionObjectType = {
@@ -72,6 +60,18 @@ export const generateDefaultConditionObject = (
   };
 
   return result;
+};
+
+const generateEmptyConditionBlock = (pos: number, leftConditionOptions) => {
+  const newBlockId = uuidv4();
+  return {
+    blockId: newBlockId,
+    position: pos,
+    conditions: [
+      generateDefaultConditionObject(0, leftConditionOptions, newBlockId),
+    ],
+    Component: ConditionBlock,
+  };
 };
 
 export const ConditionBuilder: React.FC = () => {
@@ -156,7 +156,6 @@ export const ConditionBuilder: React.FC = () => {
       });
     });
   };
-
 
   return (
     <>
