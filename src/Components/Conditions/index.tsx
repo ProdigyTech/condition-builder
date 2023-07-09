@@ -1,47 +1,17 @@
 import { ConditionDropdown } from "./ConditionDropdowns";
 import { Button, Paper } from "@mui/material";
-import { useEffect, useState, ReactElement } from "react";
+import React, { useEffect, useState, ReactElement } from "react";
 import { useConditionsContext } from "@Context/ConditionBuilderContext";
 import { v4 as uuidv4 } from "uuid";
 import { useDataContext } from "@Context/DataContext";
 import { ConditionBlock } from "./ConditionBlock";
-
-type ConditionsObject = {
-  Component: ReactElement;
-  id: string;
-  blockId: string;
-  position: number;
-  filterOn: string;
-  operator: string;
-  conditionValue: string;
-};
-
-type GlobalConditionBlockData = {
-  blockId: string;
-  position: number;
-  conditions: Array<ConditionsObject>;
-  Component: typeof ConditionBlock;
-};
-
-type filterOnType = {
-  label: string;
-  value: string;
-};
-
-type operatorType = {
-  label: string;
-  value: string;
-};
-
-type DefaultConditionObjectType = {
-  Component: ReactElement;
-  id: string;
-  blockId: string;
-  position: number;
-  filterOn: filterOnType;
-  operator: operatorType;
-  conditionValue: string;
-};
+import {
+  operatorType,
+  DefaultConditionObjectType,
+  GlobalConditionBlockData,
+  ConditionsObject,
+  AddConditionFunc,
+} from "./types";
 
 export const generateDefaultConditionObject = (
   pos: number,
@@ -88,8 +58,6 @@ export const ConditionBuilder: React.FC = () => {
   const [allConditionBlocks, setConditionBlocks] = useState<
     Array<GlobalConditionBlockData>
   >([]);
-
-  console.log(allConditionBlocks);
 
   useEffect(() => {
     if (!isLoading && allConditionBlocks.length == 0 && isReady) {
@@ -170,7 +138,7 @@ export const ConditionBuilder: React.FC = () => {
             {allConditionBlocks.map(
               ({ blockId, Component, conditions, ...rest }) => {
                 return (
-                  <>
+                  <React.Fragment key={`${blockId}-outer`}>
                     <Component
                       {...rest}
                       key={blockId}
@@ -181,7 +149,7 @@ export const ConditionBuilder: React.FC = () => {
                     />
 
                     {allConditionBlocks.length > 0 && <span> AND </span>}
-                  </>
+                  </React.Fragment>
                 );
               }
             )}

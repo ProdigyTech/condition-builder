@@ -1,4 +1,3 @@
-import { ConditionDropdown } from "./Conditions/ConditionDropdowns";
 import {
   Grid,
   TextField,
@@ -7,7 +6,7 @@ import {
   Skeleton,
   Container,
 } from "@mui/material";
-import { useCallback, useEffect, useState, ReactElement } from "react";
+import React, { useCallback, useEffect, useState, ReactElement } from "react";
 import { ConditionOptions } from "@Shared";
 import { useConditionsContext } from "@Context/ConditionBuilderContext";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -16,33 +15,8 @@ import { v4 as uuidv4 } from "uuid";
 import { useDataContext } from "@Context/DataContext";
 import { generateDefaultConditionObject } from "./index";
 
+import { ConditionBlockProps } from "./types";
 
-type ConditionsObject = {
-  Component: ReactElement;
-  id: string;
-  blockId: string;
-  position: number;
-  filterOn: string;
-  operator: string;
-  conditionValue: string;
-};
-
-
-type ConditionBlockProps = {
-  blockId: number;
-  conditions: Array<ConditionsObject>;
-  updateConditionsArray: UpdateConditionsArrayFunc;
-  position: number;
-  addCondition: AddConditionFunc;
-};
-
-type UpdateConditionsArrayFunc = (arg: {
-  blockId: string;
-  conditionArr: Array<ConditionsObject>;
-}) => void;
-
-
-type AddConditionFunc = (arg: { blockId: string }) => void;
 
 export const ConditionBlock = ({
   blockId,
@@ -78,7 +52,7 @@ export const ConditionBlock = ({
       <Grid container>
         {conditions.map(({ Component: Condition, id, ...rest }, index) => {
           return (
-            <>
+            <React.Fragment key={`${id}-outer`}>
               {index !== 0 && (
                 <Grid
                   style={{
@@ -104,7 +78,7 @@ export const ConditionBlock = ({
                 ConditionOptions={ConditionOptions}
                 addCondition={addCondition}
               />
-            </>
+            </React.Fragment>
           );
         })}
       </Grid>

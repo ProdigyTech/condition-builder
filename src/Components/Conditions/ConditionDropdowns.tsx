@@ -10,15 +10,12 @@ import {
 //TODO Update Imports 
 import { useCallback, useEffect, useState } from "react";
 import { ConditionOptions } from "@Shared";
-import { useConditionsContext } from "@Context/ConditionBuilderContext";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
-import { v4 as uuidv4 } from "uuid";
-import { useDataContext } from "@Context/DataContext";
 import { Dropdown } from "../Select";
 
 
-//Todo: Add type
+//Todo: Add types
 
 export const ConditionDropdown = ({
   id = 0,
