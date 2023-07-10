@@ -5,7 +5,7 @@
 
 ## Conditions Data Structure Explanation
 
-The provided data structure represents a collection of condition groups, where each group consists of one or more conditions. Here's a breakdown of the structure:
+The data structure represents a collection of condition groups, where each group consists of one or more conditions. Here's a breakdown of the structure:
 
 - Each object within the condition groups array represents a condition group and has the following properties:
   - `conditionGroupId`: A unique identifier for the condition group.
@@ -18,8 +18,8 @@ The provided data structure represents a collection of condition groups, where e
   - `id`: A unique identifier for the condition.
   - `conditionGroupId`: The identifier of the condition group to which the condition belongs.
   - `conditionPosition`: The position of the condition within its parent condition group.
-  - `filterOn`: An object specifying the filter criteria, containing properties such as "label" and "value".
-  - `operator`: An object specifying the operator used for the condition, containing properties such as "label" and "value".
+  - `filterOn`: An object specifying the field to be filtered against. 
+  - `operator`: An object specifying the operator used for the condition such as equals, contains etc
   - `conditionValue`: The value used for comparison in the condition.
 
 This data structure allows you to represent complex conditions by organizing them into condition groups. Each condition group represents an "AND" condition, meaning that all conditions within a group must evaluate to true for the group to be considered true. Within each group, individual conditions represent "OR" conditions, where at least one condition must evaluate to true for the group to be considered true.
