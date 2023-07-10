@@ -1,17 +1,19 @@
 import { Grid } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { ConditionOptions } from "@Shared";
 import { generateDefaultConditionObject } from "./index";
 import { ConditionBlockProps } from "./types";
 import { useTableContext } from "@Context/TableContext";
+import { Skeleton } from "@mui/material";
 
 export const ConditionBlock = ({
   blockId,
   conditions = [],
   updateConditionsArray,
   addCondition,
-  applySelectedFilters,
 }: ConditionBlockProps) => {
+  const [showPendingSkeleton, setShowPendingSkeleton] = useState({index: 0});
+
   const { columns = [] } = useTableContext();
   const leftConditionOptions = columns?.map((col) => {
     return {
@@ -43,7 +45,7 @@ export const ConditionBlock = ({
     updateConditionsArray({ blockId, conditionArr: updatedConditions });
   };
 
-  const deleteCondition = ({ conditionIdToDelete, blockId, position }) => {
+  const deleteCondition = ({ conditionIdToDelete, blockId }) => {
     const updatedConditions = conditions
       .filter((condition) => condition.id !== conditionIdToDelete)
       .map((condition, index) => ({
@@ -94,6 +96,7 @@ export const ConditionBlock = ({
                     OR{" "}
                   </Grid>
                 )}
+
                 <Condition
                   {...rest}
                   key={id}
@@ -105,10 +108,16 @@ export const ConditionBlock = ({
                   deleteCondition={deleteCondition}
                   leftConditionOptions={leftConditionOptions}
                   ConditionOptions={ConditionOptions}
+                  position={position}
                   insertNewConditionToExistingBlock={
                     insertNewConditionToExistingBlock
                   }
+                  setShowPendingSkeleton={setShowPendingSkeleton}
                 />
+
+                {showPendingSkeleton && showPendingSkeleton.index === index && (
+                  <Skeleton variant="rectangular" style={{width: "100%", height: "3em"}}sx={{ my: 4, mx: 1 }} />
+                )}
               </React.Fragment>
             );
           }

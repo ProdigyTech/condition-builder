@@ -29,6 +29,7 @@ export const ConditionDropdown = ({
   insertNewConditionToExistingBlock,
   deleteCondition,
   isLast,
+  setShowPendingSkeleton,
 }) => {
   const [error, setValidationError] = useState(false);
   const inputRef = useRef();
@@ -119,7 +120,10 @@ export const ConditionDropdown = ({
                 insertPosition: position + 1,
               });
             }
+            setShowPendingSkeleton(null)
           }}
+          onMouseEnter={() => setShowPendingSkeleton({ index: position })}
+          onMouseLeave={() => setShowPendingSkeleton(null)}
         />
 
         <DeleteForeverIcon
