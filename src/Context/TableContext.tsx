@@ -48,6 +48,13 @@ export const TableProvider = ({ children }: TableProviderProps) => {
     }
   }, [isUrlValid]);
 
+  // if the url changes and the data isn't valid remove original rows
+  useEffect(() => {
+    if (!data) {
+      setOriginalRows([]);
+    }
+  }, [data]);
+
   const formatRows = useMemo(() => {
     if (isLoading) return [];
 

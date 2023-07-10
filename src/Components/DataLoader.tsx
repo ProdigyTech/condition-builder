@@ -1,5 +1,6 @@
 import { Input } from "@Components";
 import { useDataContext } from "@Context/DataContext";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 export const DataLoader: React.ElementType = () => {
   const { url, setUrl, validate, error, setIsDirty, isDirty } = useDataContext();
@@ -25,7 +26,7 @@ export const DataLoader: React.ElementType = () => {
         Insert data url. Returning data MUST be an array json with each element
         is key/value pair
       </span>
-      {error && <span> {error} </span>}
+      {error && <span> <ErrorOutlineIcon/> {error} </span>}
     </>
   );
 };

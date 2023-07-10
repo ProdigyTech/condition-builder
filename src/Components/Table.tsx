@@ -2,8 +2,15 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Box, Skeleton } from "@mui/material";
 import { useTableContext } from "@Context/TableContext";
 export const Table: React.FC = () => {
-  const { columns, rows, shouldDisplayGrid, total, filtered, isLoading } =
-    useTableContext();
+  const {
+    columns,
+    rows,
+    shouldDisplayGrid,
+    total,
+    filtered,
+    isLoading,
+    isReady,
+  } = useTableContext();
 
   const LoadingSkeleton = () => (
     <Box

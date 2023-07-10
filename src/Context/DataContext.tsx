@@ -1,11 +1,5 @@
 import axios from "axios";
-import {
-  useContext,
-  useState,
-  useMemo,
-  useCallback,
-  createContext,
-} from "react";
+import { useContext, useState, createContext } from "react";
 
 interface IDataContext {
   url: string;
@@ -27,6 +21,7 @@ interface ValidationResult {
 
 export const DataContext = createContext<IDataContext | null>(null);
 
+//TODO: Clean up this file add types
 export const DataProvider: React.FC = ({ children }) => {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -35,6 +30,16 @@ export const DataProvider: React.FC = ({ children }) => {
   const [isUrlValid, setIsUrlValid] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+
+  const reset = () => {
+    setUrl("");
+    setIsLoading(false);
+    setError(null);
+    setData(null);
+    setIsUrlValid(false);
+    setIsReady(false);
+    setIsDirty(false);
+  };
 
   const loadData = (url: string) => {
     axios
@@ -60,6 +65,7 @@ export const DataProvider: React.FC = ({ children }) => {
         setData(null);
         setIsReady(false);
         setIsLoading(false);
+        setIsUrlValid(false);
       });
   };
 
@@ -99,17 +105,21 @@ export const DataProvider: React.FC = ({ children }) => {
 
   const validate = () => {
     try {
+      if (!url.length) {
+        return reset();
+      }
+
       if (url.length && isDirty) {
         new URL(url);
         setError(null);
         setIsLoading(true);
         loadData(url);
-      } else {
-        setError(null);
-        setIsLoading(false);
       }
     } catch (e) {
       setError(e.message);
+      setError(null);
+      setIsLoading(false);
+      setIsReady(false);
     }
   };
 
