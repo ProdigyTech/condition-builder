@@ -9,7 +9,7 @@ import {
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 //TODO Update Imports
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ConditionOptions } from "@Shared";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
@@ -32,20 +32,19 @@ export const ConditionDropdown = ({
   setShowPendingSkeleton,
 }) => {
   const [error, setValidationError] = useState(false);
-  const inputRef = useRef();
+  const [inputValue, setInputValue] = useState("");
 
   // input validation when dropdown operator changes or value changes
   useEffect(() => {
-    if (inputRef?.current?.value) {
-      (operator.value === "2" || operator.value === "3") &&
-      isNaN(inputRef.current.value)
+    if (inputValue.length) {
+      (operator.value === "2" || operator.value === "3") && isNaN(inputValue)
         ? setValidationError(true)
         : setValidationError(false);
       return;
     }
 
     setValidationError(false);
-  }, [inputRef, filterOn, setValidationError, operator]);
+  }, [inputValue, filterOn, setValidationError, operator]);
 
   return (
     <>
@@ -91,18 +90,18 @@ export const ConditionDropdown = ({
           id="conditionValue"
           label="Value"
           variant="filled"
-          inputRef={inputRef}
+          error={error}
+          helperText={error &&
+            <>
+              <ErrorOutlineIcon />
+              Value must be a number when using comparison operators
+            </>
+          }
           onChange={(e) => {
+            setInputValue(e.target.value);
             onDropdownChange(e.target.value, "conditionValue", id);
           }}
         />
-        {error && (
-          <>
-            {" "}
-            <ErrorOutlineIcon />
-            <p> Value must be a number when using comparison operator</p>
-          </>
-        )}
 
         <AddIcon
           style={{
@@ -120,7 +119,7 @@ export const ConditionDropdown = ({
                 insertPosition: position + 1,
               });
             }
-            setShowPendingSkeleton(null)
+            setShowPendingSkeleton(null);
           }}
           onMouseEnter={() => setShowPendingSkeleton({ index: position })}
           onMouseLeave={() => setShowPendingSkeleton(null)}
