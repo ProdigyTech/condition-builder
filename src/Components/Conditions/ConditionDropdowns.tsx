@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   TextField,
@@ -5,17 +6,16 @@ import {
   Paper,
   Skeleton,
   Container,
+  Stack,
+  FormHelperText,
+  Box,
+  Typography,
 } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-
-//TODO Update Imports
-import { useCallback, useEffect, useState } from "react";
-import { ConditionOptions } from "@Shared";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
 import { Dropdown } from "../Select";
-
-//Todo: Add types
+import { ConditionOptions } from "@Shared";
 
 export const ConditionDropdown = ({
   id,
@@ -29,10 +29,10 @@ export const ConditionDropdown = ({
   insertNewConditionToExistingGroup,
   deleteCondition,
   isLast,
-  setShowPendingSkeleton,
 }) => {
   const [error, setValidationError] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [showPendingSkeleton, setShowPendingSkeleton] = useState(false);
 
   // input validation when dropdown operator changes or value changes
   useEffect(() => {
@@ -47,13 +47,8 @@ export const ConditionDropdown = ({
   }, [inputValue, filterOn, setValidationError, operator]);
 
   return (
-    <>
-      <Grid
-        item
-        xs={conditionPosition == 0 ? 4 : 3}
-        sm={conditionPosition == 0 ? 4 : 3}
-        md={conditionPosition == 0 ? 4 : 3}
-      >
+    <Grid container spacing={1} alignItems="center">
+      <Grid item xs={4}>
         <Dropdown
           id="filterOn"
           label={`Left Condition`}
@@ -64,12 +59,7 @@ export const ConditionDropdown = ({
           }}
         />
       </Grid>
-      <Grid
-        item
-        xs={conditionPosition == 0 ? 4 : 3}
-        sm={conditionPosition == 0 ? 4 : 3}
-        md={conditionPosition == 0 ? 4 : 3}
-      >
+      <Grid item xs={3}>
         <Dropdown
           id="operator"
           label={`Operator`}
@@ -77,76 +67,72 @@ export const ConditionDropdown = ({
           defaultValue={operator}
           onChange={(e) => {
             onDropdownChange(e.target.value, "operator", id);
-          }} //TODO: NEED TO ADD new value to existing condition
+          }}
         />
       </Grid>
-      <Grid
-        item
-        xs={conditionPosition == 0 ? 4 : 3}
-        sm={conditionPosition == 0 ? 4 : 3}
-        md={conditionPosition == 0 ? 4 : 3}
-      >
+      <Grid item xs={3}>
         <TextField
           id="conditionValue"
           label="Value"
           variant="filled"
           error={error}
-          helperText={
-            error && (
-              <>
-                <ErrorOutlineIcon />
-                Value must be a number when using comparison operators
-              </>
-            )
-          }
           onChange={(e) => {
             setInputValue(e.target.value);
             onDropdownChange(e.target.value, "conditionValue", id);
           }}
         />
-
-        <AddIcon
-          style={{
-            padding: ".5em",
-            fontSize: "2em",
-            color: "#1976d2",
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            if (isLast) {
-              addCondition({ groupId, leftConditionOptions });
-            } else {
-              insertNewConditionToExistingGroup({
-                groupId,
-                insertPosition: conditionPosition + 1,
-              });
-            }
-            setShowPendingSkeleton(null);
-          }}
-          onMouseEnter={() =>
-            setShowPendingSkeleton({ index: conditionPosition })
-          }
-          onMouseLeave={() => setShowPendingSkeleton(null)}
-        />
-
-        <DeleteForeverIcon
-          style={{
-            padding: ".5em",
-            fontSize: "2em",
-            color: "red",
-            cursor: "pointer",
-          }}
-          onClick={() =>
-            deleteCondition({
-              conditionIdToDelete: id,
-              groupId,
-              conditionPosition,
-            })
-          }
-        >
-          Delete
-        </DeleteForeverIcon>
       </Grid>
-    </>
+      <Grid item xs={2}>
+        <Box display="flex" justifyContent="flex-end" alignItems="center">
+          <AddIcon
+            style={{
+              color: "#1976d2",
+              cursor: "pointer",
+              marginRight: "8px",
+            }}
+            onClick={() => {
+              if (isLast) {
+                addCondition({ groupId, leftConditionOptions });
+              } else {
+                insertNewConditionToExistingGroup({
+                  groupId,
+                  insertPosition: conditionPosition + 1,
+                });
+              }
+              setShowPendingSkeleton(false);
+            }}
+            onMouseEnter={() => setShowPendingSkeleton(true)}
+            onMouseLeave={() => setShowPendingSkeleton(false)}
+          />
+
+          <DeleteForeverIcon
+            style={{
+              color: "red",
+              cursor: "pointer",
+              fontSize: "2em"
+            }}
+            onClick={() =>
+              deleteCondition({
+                conditionIdToDelete: id,
+                groupId,
+                conditionPosition,
+              })
+            }
+          >
+            Delete
+          </DeleteForeverIcon>
+        </Box>
+      </Grid>
+      {showPendingSkeleton && (
+        <Skeleton
+          variant="rectangular"
+          style={{
+            width: "100%",
+            height: "3em",
+          }}
+          sx={{ my: 2 }}
+        />
+      )}
+    </Grid>
   );
 };

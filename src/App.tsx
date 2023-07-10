@@ -7,24 +7,25 @@ import { Grid } from "@mui/material";
 
 function App() {
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <h1>Condition Builder</h1>
-      </Grid>
-      <DataProvider>
-        <Grid item xs={10}>
-          <DataLoader />
+  
+      <Grid container style={{ marginLeft: "2em" }} rowSpacing={2}>
+        <Grid item xs={8}>
+          <h1>Condition Builder</h1>
         </Grid>
-        <TableProvider>
-          <Grid item xs={10}>
-            <ConditionBuilder />
+        <DataProvider>
+          <Grid item xs={8}>
+            <DataLoader />
           </Grid>
-          <Grid item xs={12}>
-            <Table />
-          </Grid>
-        </TableProvider>
-      </DataProvider>
-    </Grid>
+          <TableProvider>
+            <Grid style={{ marginTop: "2em" }} item xs={8}>
+              <ConditionBuilder />
+            </Grid>
+            <Grid item xs={8}>
+              <Table />
+            </Grid>
+          </TableProvider>
+        </DataProvider>
+      </Grid>
   );
 }
 

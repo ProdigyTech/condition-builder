@@ -1,9 +1,9 @@
-import { Grid } from "@mui/material";
+import { Grid, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { ConditionOptions } from "@Shared";
 import { generateDefaultConditionObject } from "./index";
 import { ConditionGroupProps } from "./types";
-import { useTableContext } from "@Context/TableContext";
+import { useTableContext } from "@Context/useTableContext";
 import { Skeleton } from "@mui/material";
 
 export const ConditionGroup = ({
@@ -12,8 +12,6 @@ export const ConditionGroup = ({
   updateConditionsArray,
   addCondition,
 }: ConditionGroupProps) => {
-  const [showPendingSkeleton, setShowPendingSkeleton] = useState(null);
-
   const { columns = [] } = useTableContext();
   const leftConditionOptions = columns?.map((col) => {
     return {
@@ -81,26 +79,33 @@ export const ConditionGroup = ({
         {conditions.map(
           ({ Component: Condition, id, conditionPosition, ...rest }, index) => {
             return (
-              <React.Fragment key={`${id}-outer`}>
+              <Stack
+                direction="row"
+                spacing={5}
+                width={"100%"}
+                key={`${id}-outer`}
+                sx={{ m: 2 }}
+              >
                 {index !== 0 && (
-                  <Grid
+                  <Typography
                     style={{
                       alignItems: "center",
                       justifyContent: "center",
                       padding: "1em",
                       fontWeight: "bold",
+                      color: "rgb(25, 118, 210)",
                     }}
                     item
                   >
-                    {" "}
-                    OR{" "}
-                  </Grid>
+                    OR
+                  </Typography>
                 )}
 
                 <Condition
                   {...rest}
                   key={id}
                   id={id}
+                  index={index}
                   groupId={groupId}
                   addCondition={addCondition}
                   isLast={conditions.length - 1 == conditionPosition}
@@ -112,17 +117,8 @@ export const ConditionGroup = ({
                   insertNewConditionToExistingGroup={
                     insertNewConditionToExistingGroup
                   }
-                  setShowPendingSkeleton={setShowPendingSkeleton}
                 />
-
-                {showPendingSkeleton && showPendingSkeleton.index === index && (
-                  <Skeleton
-                    variant="rectangular"
-                    style={{ width: "100%", height: "3em" }}
-                    sx={{ my: 4, mx: 1 }}
-                  />
-                )}
-              </React.Fragment>
+              </Stack>
             );
           }
         )}

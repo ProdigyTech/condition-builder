@@ -1,13 +1,34 @@
-import axios from "axios";
-import { useContext, useState, createContext } from "react";
+/**
+ * Context for Data Management
+ *
+ * This context provides state and functions related to data management, including
+ * loading data from a URL, validation, and tracking dirty state.
+ *
+ * Context properties:
+ *   - url: The URL to load data from
+ *   - setUrl: Function to update the URL
+ *   - isLoading: Boolean indicating if data is currently being loaded
+ *   - error: Error message if data loading or validation fails
+ *   - validate: Function to trigger data validation and loading
+ *   - data: The loaded data
+ *   - isUrlValid: Boolean indicating if the URL is valid
+ *   - isReady: Boolean indicating if the data is ready for display
+ *   - isDirty: Boolean indicating if the input has been modified
+ *   - setIsDirty: Function to update the dirty state
+ *
+ */
 
-interface IDataContext {
+import axios from "axios";
+import { useState, createContext } from "react";
+import { flushSync } from "react-dom";
+
+export interface IDataContext {
   url: string;
   setUrl: (url: string) => void;
   isLoading: boolean;
   error: string | null;
   validate: () => void;
-  data: any;
+  data: Array<>;
   isUrlValid: boolean;
   isReady: boolean;
   isDirty: boolean;
@@ -26,10 +47,10 @@ export const DataProvider: React.FC = ({ children }) => {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState(null);
   const [isUrlValid, setIsUrlValid] = useState(false);
   const [isReady, setIsReady] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
+  const [isDirty, setIsDirty] = useState<boolean>(false);
 
   const reset = () => {
     setUrl("");
@@ -42,84 +63,83 @@ export const DataProvider: React.FC = ({ children }) => {
   };
 
   const loadData = (url: string) => {
+    setIsReady(false);
+
     axios
       .get(url)
       .then(({ data: responseData }) => {
-        setIsLoading(false);
-        const { isValid, validationErrors } = isDataValid(responseData);
+        const { isValid, validationError } = isDataValid(responseData);
+
         if (isValid) {
           setData(responseData);
-          setIsUrlValid(isValid);
+          setIsUrlValid(true);
           setIsReady(true);
         } else {
-          setError(validationErrors);
+          setError(validationError || "Invalid data");
           setData([]);
           setIsUrlValid(false);
         }
+      })
+      .catch((error) => {
+        console.error("Error during data loading:", error);
+        setError("Error occurred while loading data");
+        setData(null);
+      })
+      .finally(() => {
         setIsLoading(false);
         setIsDirty(false);
-      })
-      .catch((e) => {
-        console.error(e.message);
-        setError(e.message);
-        setData(null);
-        setIsReady(false);
-        setIsLoading(false);
-        setIsUrlValid(false);
       });
   };
 
-  const isDataValid = (data: unknown[]): ValidationResult => {
-    const validationResults: ValidationResult = {
-      isValid: true,
-      validationError: "",
-    };
-
+  // Checks to make sure the data is defined and is in the correct format
+  const isDataValid: ValidationResult = (data) => {
     if (!data) {
-      validationResults.isValid = false;
-      validationResults.validationError = "Data is Missing";
-      return validationResults;
+      return { isValid: false, validationError: "Data is missing" };
     }
 
     if (!Array.isArray(data)) {
-      validationResults.isValid = false;
-      validationResults.validationError = `Data is in the incorrect format! Data must be an array but is an ${typeof data}`;
-
-      return validationResults;
+      return { isValid: false, validationError: "Data must be an array" };
     }
 
-    if (validationResults.isValid) {
-      const result = data.every((item: any) => {
-        return typeof item === "object" && item !== null;
-      });
+    if (data.length === 0) {
+      return { isValid: false, validationError: "Data is empty" };
+    }
 
-      if (!result) {
-        validationResults.isValid = false;
-        validationResults.validationError = "Data is Missing";
-        return validationResults;
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      if (typeof item !== "object" || item === null) {
+        return {
+          isValid: false,
+          validationError: `Invalid item at index ${i}`,
+        };
       }
     }
 
-    return validationResults;
+    return { isValid: true, validationError: null };
   };
 
+  // Validation function that runs onBlur
   const validate = () => {
-    try {
-      if (!url.length) {
-        return reset();
-      }
+    if (!url.length) {
+      return reset();
+    }
 
-      if (url.length && isDirty) {
+    if (url.length && isDirty) {
+      try {
         new URL(url);
-        setError(null);
-        setIsLoading(true);
+        // don't batch useStates, with the rest, fire immediately flushSync. 
+        // resolves issue where filters are sticky when you load another data set from a cached resource
+        flushSync(() => {
+          setData(null);
+          setError(null);
+          setIsLoading(true);
+        });
         loadData(url);
+      } catch (error) {
+        setError(error.message);
+        setIsLoading(false);
+        setIsReady(false);
       }
-    } catch (e) {
-      setError(e.message);
-      setError(null);
-      setIsLoading(false);
-      setIsReady(false);
     }
   };
 
@@ -141,10 +161,3 @@ export const DataProvider: React.FC = ({ children }) => {
   );
 };
 
-export const useDataContext = (): IDataContext => {
-  const context = useContext(DataContext);
-  if (!context) {
-    throw new Error("useDataContext must be used within a DataProvider");
-  }
-  return context;
-};

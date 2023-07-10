@@ -1,15 +1,9 @@
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Skeleton } from "@mui/material";
+import { Box, Skeleton, Chip } from "@mui/material";
 import { useTableContext } from "@Context/TableContext";
 export const Table: React.FC = () => {
-  const {
-    columns,
-    rows,
-    shouldDisplayGrid,
-    total,
-    filtered,
-    isLoading,
-  } = useTableContext();
+  const { columns, rows, shouldDisplayGrid, total, filtered, isLoading } =
+    useTableContext();
 
   const LoadingSkeleton = () => (
     <Box
@@ -33,31 +27,30 @@ export const Table: React.FC = () => {
           "Result"
         )}
       </h2>
-      <p>
-        {isLoading ? (
-          <Skeleton variant="rectangular" sx={{ my: 4, mx: 1 }} />
-        ) : (
-          `Total: ${total}`
-        )}
-      </p>{" "}
-      <p>
-        {" "}
-        {isLoading ? (
-          <Skeleton variant="rectangular" sx={{ my: 4, mx: 1 }} />
-        ) : (
-          `Filtered: ${filtered}`
-        )}{" "}
-      </p>
-      <div style={{ height: 500, width: "85%" }}>
-        <DataGrid
-          rows={rows || []}
-          columns={columns || []}
-          components={{
-            LoadingOverlay: LoadingSkeleton,
-          }}
-          loading={isLoading}
-        />
-      </div>
+      {isLoading ? (
+        <Skeleton variant="rectangular" sx={{ my: 4, mx: 1 }} />
+      ) : (
+        <div style={{ marginBottom: "1em" }}>
+          <Chip
+            style={{ color: "black", marginRight: "1em" }}
+            label={`Total: ${total}`}
+          />
+          <Chip
+            style={{ backgroundColor: "#1976d2", color: "white" }}
+            label={`Filtered:  ${filtered}`}
+          />
+        </div>
+      )}
+
+      <DataGrid
+        style={{ height: 500 }}
+        rows={rows || []}
+        columns={columns || []}
+        components={{
+          LoadingOverlay: LoadingSkeleton,
+        }}
+        loading={isLoading}
+      />
     </>
   ) : (
     <></>

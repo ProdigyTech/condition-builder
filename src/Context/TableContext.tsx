@@ -7,11 +7,11 @@ import {
   useCallback,
 } from "react";
 
-import { useDataContext } from "./DataContext";
+import { useDataContext } from "./useDataContext";
 
 type TableProviderProps = React.PropsWithChildren;
 
-type ITableContext = {
+export type ITableContext = {
   rows: [];
   columns: [];
   shouldDisplayGrid: boolean;
@@ -24,7 +24,6 @@ type ITableContext = {
 // TODO: move to utils.
 const rowBuilder = (keys, values, index) => {
   let row = { id: index };
-
   values.forEach((val, i) => {
     row = { ...row, [keys[i]]: val };
   });
@@ -53,7 +52,7 @@ export const TableProvider = ({ children }: TableProviderProps) => {
     if (!data) {
       setOriginalRows([]);
     }
-  }, [data]);
+  }, [data, isReady]);
 
   const formatRows = useMemo(() => {
     if (isLoading) return [];
@@ -163,18 +162,10 @@ export const TableProvider = ({ children }: TableProviderProps) => {
     applyFilter,
     isLoading,
     isReady,
+    originalRows,
   };
 
   return (
     <TableContext.Provider value={values}>{children}</TableContext.Provider>
   );
-};
-
-export const useTableContext = (): ITableContext => {
-  const context = useContext(TableContext);
-
-  if (!context) {
-    throw new Error("useTableContext must be used within a TableProvider");
-  }
-  return context;
 };

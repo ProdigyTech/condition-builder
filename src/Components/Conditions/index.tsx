@@ -1,8 +1,8 @@
 import { ConditionDropdown } from "./ConditionDropdowns";
-import { Button, Paper } from "@mui/material";
-import React, { useEffect, useState, ReactElement, useCallback } from "react";
+import { Button, Paper, Stack } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { useDataContext } from "@Context/DataContext";
+import { useDataContext } from "@Context/useDataContext";
 import { ConditionGroup } from "./ConditionGroup";
 import {
   GlobalConditionGroupData,
@@ -11,7 +11,7 @@ import {
 } from "./types";
 
 import { ConditionOptions } from "@Shared";
-import { useTableContext } from "@Context/TableContext";
+import { useTableContext } from "@Context/useTableContext";
 
 export const generateDefaultConditionObject = (
   pos,
@@ -50,7 +50,12 @@ const generateNewConditionGroup = (pos: number, leftConditionOptions) => {
 };
 
 export const ConditionBuilder: React.FC = () => {
-  const { isLoading, columns = [], applyFilter } = useTableContext();
+  const {
+    isLoading,
+    columns = [],
+    applyFilter,
+    originalRows,
+  } = useTableContext();
   const { isReady } = useDataContext();
 
   const leftConditionOptions = columns?.map((col) => {
@@ -59,7 +64,6 @@ export const ConditionBuilder: React.FC = () => {
       label: col.field,
     };
   });
-
 
   const [conditionGroups, setConditionGroups] = useState<
     Array<GlobalConditionGroupData>
@@ -83,6 +87,12 @@ export const ConditionBuilder: React.FC = () => {
       applyFilter(conditionGroups);
     }
   }, [conditionGroups, isReady]);
+
+  useEffect(() => {
+    if (!originalRows.length) {
+      setConditionGroups([]);
+    }
+  }, [originalRows]);
 
   const addNewAndGroup = (pos: number, leftConditionOptions) => {
     setConditionGroups((existing) => [
@@ -147,17 +157,16 @@ export const ConditionBuilder: React.FC = () => {
   return (
     <>
       {isReady ? (
-        <Paper
-          elevation={2}
-          style={{
-            padding: "2em",
-          }}
-        >
-          <>
-            {conditionGroups.map(
-              ({ groupId, Component: ConditionGroup, conditions, ...rest }) => {
-                return (
-                  <React.Fragment key={`${groupId}-outer`}>
+        <Stack>
+          {conditionGroups.map(
+            (
+              { groupId, Component: ConditionGroup, conditions, ...rest },
+              i
+            ) => {
+              const isDisabled = i !== conditionGroups.length - 1;
+              return (
+                <React.Fragment key={`${groupId}-outer`}>
+                  <Paper elevation={2} sx={{ p: 2 }}>
                     <ConditionGroup
                       {...rest}
                       key={groupId}
@@ -166,22 +175,30 @@ export const ConditionBuilder: React.FC = () => {
                       addCondition={addNewConditionToExistingGroup}
                       updateConditionsArray={updateConditionsByGroupId}
                     />
+                  </Paper>
 
-                    {conditionGroups.length > 0 && <span> AND </span>}
-                  </React.Fragment>
-                );
-              }
-            )}
-
-            <Button
-              onClick={() =>
-                addNewAndGroup(conditionGroups.length, leftConditionOptions)
-              }
-            >
-              {conditionGroups.length === 0 ? "Add Condition + " : "And +"}
-            </Button>
-          </>
-        </Paper>
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <div style={{ marginBottom: "1em", marginTop: "1em" }}>
+                      <Button
+                        variant={isDisabled ? " " : "outlined"}
+                        disabled={isDisabled}
+                        sx={{ borderRadius: 0, minWidth: 0, py: 0 }}
+                        onClick={() =>
+                          addNewAndGroup(
+                            conditionGroups.length,
+                            leftConditionOptions
+                          )
+                        }
+                      >
+                        AND
+                      </Button>
+                    </div>
+                  </Stack>
+                </React.Fragment>
+              );
+            }
+          )}
+        </Stack>
       ) : (
         <></>
       )}

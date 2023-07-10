@@ -5,6 +5,7 @@ import { Input } from "./Input";
 import { DataLoader } from "./DataLoader";
 import { ConditionDropdown } from "./Conditions/ConditionDropdowns";
 import { ConditionGroup } from "./Conditions/ConditionGroup";
+import  ErrorBoundary  from "./ErrorBoundary";
 
 export {
   Dropdown,
@@ -14,4 +15,5 @@ export {
   DataLoader,
   ConditionDropdown,
   ConditionGroup,
+  ErrorBoundary,
 };
