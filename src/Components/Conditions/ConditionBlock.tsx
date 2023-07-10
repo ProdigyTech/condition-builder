@@ -12,7 +12,7 @@ export const ConditionBlock = ({
   updateConditionsArray,
   addCondition,
 }: ConditionBlockProps) => {
-  const [showPendingSkeleton, setShowPendingSkeleton] = useState({index: 0});
+  const [showPendingSkeleton, setShowPendingSkeleton] = useState(null);
 
   const { columns = [] } = useTableContext();
   const leftConditionOptions = columns?.map((col) => {
