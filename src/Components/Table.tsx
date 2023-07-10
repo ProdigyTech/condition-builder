@@ -9,7 +9,6 @@ export const Table: React.FC = () => {
     total,
     filtered,
     isLoading,
-    isReady,
   } = useTableContext();
 
   const LoadingSkeleton = () => (

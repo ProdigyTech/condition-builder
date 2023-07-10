@@ -50,7 +50,7 @@ const generateEmptyConditionBlock = (pos: number, leftConditionOptions) => {
 };
 
 export const ConditionBuilder: React.FC = () => {
-  const { rows, isLoading, columns = [], applyFilter } = useTableContext();
+  const { isLoading, columns = [], applyFilter } = useTableContext();
   const { isReady } = useDataContext();
 
   const leftConditionOptions = columns?.map((col) => {
