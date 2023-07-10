@@ -6,9 +6,10 @@ import {
   Skeleton,
   Container,
 } from "@mui/material";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 //TODO Update Imports
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { ConditionOptions } from "@Shared";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
@@ -29,6 +30,22 @@ export const ConditionDropdown = ({
   deleteCondition,
   isLast,
 }) => {
+  const [error, setValidationError] = useState(false);
+  const inputRef = useRef();
+
+  // input validation when dropdown operator changes or value changes
+  useEffect(() => {
+    if (inputRef?.current?.value) {
+      (operator.value === "2" || operator.value === "3") &&
+      isNaN(inputRef.current.value)
+        ? setValidationError(true)
+        : setValidationError(false);
+      return;
+    }
+
+    setValidationError(false);
+  }, [inputRef, filterOn, setValidationError, operator]);
+
   return (
     <>
       <Grid
@@ -42,7 +59,9 @@ export const ConditionDropdown = ({
           label={`Left Condition`}
           options={leftConditionOptions}
           defaultValue={filterOn}
-          onChange={(e) => onDropdownChange(e.target.value, "filterOn", id)}
+          onChange={(e) => {
+            onDropdownChange(e.target.value, "filterOn", id);
+          }}
         />
       </Grid>
       <Grid
@@ -56,7 +75,9 @@ export const ConditionDropdown = ({
           label={`Operator`}
           options={ConditionOptions}
           defaultValue={operator}
-          onChange={(e) => onDropdownChange(e.target.value, "operator", id)} //TODO: NEED TO ADD new value to existing condition
+          onChange={(e) => {
+            onDropdownChange(e.target.value, "operator", id);
+          }} //TODO: NEED TO ADD new value to existing condition
         />
       </Grid>
       <Grid
@@ -69,10 +90,19 @@ export const ConditionDropdown = ({
           id="conditionValue"
           label="Value"
           variant="filled"
-          onChange={(e) =>
-            onDropdownChange(e.target.value, "conditionValue", id)
-          } //TODO: NEED TO ADD new value to existing condition
+          inputRef={inputRef}
+          onChange={(e) => {
+            onDropdownChange(e.target.value, "conditionValue", id);
+          }}
         />
+        {error && (
+          <>
+            {" "}
+            <ErrorOutlineIcon />
+            <p> Value must be a number when using comparison operator</p>
+          </>
+        )}
+
         <AddIcon
           style={{
             padding: ".5em",
@@ -99,7 +129,9 @@ export const ConditionDropdown = ({
             color: "red",
             cursor: "pointer",
           }}
-          onClick={() => deleteCondition({ conditionIdToDelete: id, blockId, position})}
+          onClick={() =>
+            deleteCondition({ conditionIdToDelete: id, blockId, position })
+          }
         >
           Delete
         </DeleteForeverIcon>

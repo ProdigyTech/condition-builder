@@ -1,7 +1,7 @@
 import { Input } from "@Components";
 import { useDataContext } from "@Context/DataContext";
 
-export const DataLoader: React.FC = () => {
+export const DataLoader: React.ElementType = () => {
   const { url, setUrl, validate, error, setIsDirty, isDirty } = useDataContext();
 
   return (
@@ -15,7 +15,6 @@ export const DataLoader: React.FC = () => {
         variant="filled"
         onChange={(e) => {
           setUrl(e.target.value);
-
           if (!isDirty) {
             setIsDirty(true);
           }
