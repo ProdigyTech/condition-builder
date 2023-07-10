@@ -144,7 +144,6 @@ export const ConditionBuilder: React.FC = () => {
     }
   };
 
-  console.log(conditionGroups);
   return (
     <>
       {isReady ? (
