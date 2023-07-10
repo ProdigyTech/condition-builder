@@ -28,7 +28,7 @@ export const ConditionGroup = ({
       if (index >= insertPosition) {
         return {
           ...condition,
-          position: condition.position + 1,
+          conditionPosition: condition.conditionPosition + 1,
         };
       }
       return condition;
@@ -50,7 +50,7 @@ export const ConditionGroup = ({
       .filter((condition) => condition.id !== conditionIdToDelete)
       .map((condition, index) => ({
         ...condition,
-        position: index,
+        conditionPosition: index,
       }));
 
     updateConditionsArray({
@@ -79,7 +79,7 @@ export const ConditionGroup = ({
     <>
       <Grid container>
         {conditions.map(
-          ({ Component: Condition, id, position, ...rest }, index) => {
+          ({ Component: Condition, id, conditionPosition, ...rest }, index) => {
             return (
               <React.Fragment key={`${id}-outer`}>
                 {index !== 0 && (
@@ -103,12 +103,12 @@ export const ConditionGroup = ({
                   id={id}
                   groupId={groupId}
                   addCondition={addCondition}
-                  isLast={conditions.length - 1 == position}
+                  isLast={conditions.length - 1 == conditionPosition}
                   onDropdownChange={onDropdownChange}
                   deleteCondition={deleteCondition}
                   leftConditionOptions={leftConditionOptions}
                   ConditionOptions={ConditionOptions}
-                  position={position}
+                  conditionPosition={conditionPosition}
                   insertNewConditionToExistingGroup={
                     insertNewConditionToExistingGroup
                   }

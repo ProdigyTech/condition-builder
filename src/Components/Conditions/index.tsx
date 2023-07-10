@@ -23,7 +23,7 @@ export const generateDefaultConditionObject = (
     Component: ConditionDropdown,
     id: uuidv4(),
     groupId: groupId,
-    position: pos,
+    conditionPosition: pos,
     filterOn: leftConditionOptions[0],
     operator: ConditionOptions[0],
     conditionValue: "",
@@ -36,7 +36,7 @@ const generateNewConditionGroup = (pos: number, leftConditionOptions) => {
   const newGroupId = uuidv4();
   return {
     groupId: newGroupId,
-    position: pos,
+    groupPosition: pos,
     conditions: [
       generateDefaultConditionObject(
         0,
@@ -144,6 +144,7 @@ export const ConditionBuilder: React.FC = () => {
     }
   };
 
+  console.log(conditionGroups);
   return (
     <>
       {isReady ? (

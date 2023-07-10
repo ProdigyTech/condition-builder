@@ -20,7 +20,7 @@ import { Dropdown } from "../Select";
 export const ConditionDropdown = ({
   id,
   groupId,
-  position,
+  conditionPosition,
   filterOn,
   operator,
   leftConditionOptions,
@@ -50,9 +50,9 @@ export const ConditionDropdown = ({
     <>
       <Grid
         item
-        xs={position == 0 ? 4 : 3}
-        sm={position == 0 ? 4 : 3}
-        md={position == 0 ? 4 : 3}
+        xs={conditionPosition == 0 ? 4 : 3}
+        sm={conditionPosition == 0 ? 4 : 3}
+        md={conditionPosition == 0 ? 4 : 3}
       >
         <Dropdown
           id="filterOn"
@@ -66,9 +66,9 @@ export const ConditionDropdown = ({
       </Grid>
       <Grid
         item
-        xs={position == 0 ? 4 : 3}
-        sm={position == 0 ? 4 : 3}
-        md={position == 0 ? 4 : 3}
+        xs={conditionPosition == 0 ? 4 : 3}
+        sm={conditionPosition == 0 ? 4 : 3}
+        md={conditionPosition == 0 ? 4 : 3}
       >
         <Dropdown
           id="operator"
@@ -82,9 +82,9 @@ export const ConditionDropdown = ({
       </Grid>
       <Grid
         item
-        xs={position == 0 ? 4 : 3}
-        sm={position == 0 ? 4 : 3}
-        md={position == 0 ? 4 : 3}
+        xs={conditionPosition == 0 ? 4 : 3}
+        sm={conditionPosition == 0 ? 4 : 3}
+        md={conditionPosition == 0 ? 4 : 3}
       >
         <TextField
           id="conditionValue"
@@ -118,12 +118,14 @@ export const ConditionDropdown = ({
             } else {
               insertNewConditionToExistingGroup({
                 groupId,
-                insertPosition: position + 1,
+                insertPosition: conditionPosition + 1,
               });
             }
             setShowPendingSkeleton(null);
           }}
-          onMouseEnter={() => setShowPendingSkeleton({ index: position })}
+          onMouseEnter={() =>
+            setShowPendingSkeleton({ index: conditionPosition })
+          }
           onMouseLeave={() => setShowPendingSkeleton(null)}
         />
 
@@ -135,7 +137,11 @@ export const ConditionDropdown = ({
             cursor: "pointer",
           }}
           onClick={() =>
-            deleteCondition({ conditionIdToDelete: id, groupId, position })
+            deleteCondition({
+              conditionIdToDelete: id,
+              groupId,
+              conditionPosition,
+            })
           }
         >
           Delete
