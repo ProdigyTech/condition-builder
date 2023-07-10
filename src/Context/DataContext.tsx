@@ -28,7 +28,7 @@ export interface IDataContext {
   isLoading: boolean;
   error: string | null;
   validate: () => void;
-  data: Array<>;
+  data: Array<any>;
   isUrlValid: boolean;
   isReady: boolean;
   isDirty: boolean;
