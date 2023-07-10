@@ -2,16 +2,16 @@ import { Grid } from "@mui/material";
 import React, { useState } from "react";
 import { ConditionOptions } from "@Shared";
 import { generateDefaultConditionObject } from "./index";
-import { ConditionBlockProps } from "./types";
+import { ConditionGroupProps } from "./types";
 import { useTableContext } from "@Context/TableContext";
 import { Skeleton } from "@mui/material";
 
-export const ConditionBlock = ({
-  blockId,
+export const ConditionGroup = ({
+  groupId,
   conditions = [],
   updateConditionsArray,
   addCondition,
-}: ConditionBlockProps) => {
+}: ConditionGroupProps) => {
   const [showPendingSkeleton, setShowPendingSkeleton] = useState(null);
 
   const { columns = [] } = useTableContext();
@@ -23,7 +23,7 @@ export const ConditionBlock = ({
   });
 
   // handles the case of inserting new condition vs appending
-  const insertNewConditionToExistingBlock = ({ blockId, insertPosition }) => {
+  const insertNewConditionToExistingGroup = ({ groupId, insertPosition }) => {
     const updatedConditions = conditions.map((condition, index) => {
       if (index >= insertPosition) {
         return {
@@ -38,14 +38,14 @@ export const ConditionBlock = ({
       insertPosition,
       leftConditionOptions,
       ConditionOptions,
-      blockId
+      groupId
     );
 
     updatedConditions.splice(insertPosition, 0, newCondition);
-    updateConditionsArray({ blockId, conditionArr: updatedConditions });
+    updateConditionsArray({ groupId, conditionArr: updatedConditions });
   };
 
-  const deleteCondition = ({ conditionIdToDelete, blockId }) => {
+  const deleteCondition = ({ conditionIdToDelete, groupId }) => {
     const updatedConditions = conditions
       .filter((condition) => condition.id !== conditionIdToDelete)
       .map((condition, index) => ({
@@ -54,7 +54,7 @@ export const ConditionBlock = ({
       }));
 
     updateConditionsArray({
-      blockId,
+      groupId,
       conditionArr: updatedConditions,
     });
   };
@@ -72,7 +72,7 @@ export const ConditionBlock = ({
       }
     });
 
-    updateConditionsArray({ conditionArr: updatedConditions, blockId });
+    updateConditionsArray({ conditionArr: updatedConditions, groupId });
   };
 
   return (
@@ -101,7 +101,7 @@ export const ConditionBlock = ({
                   {...rest}
                   key={id}
                   id={id}
-                  blockId={blockId}
+                  groupId={groupId}
                   addCondition={addCondition}
                   isLast={conditions.length - 1 == position}
                   onDropdownChange={onDropdownChange}
@@ -109,14 +109,18 @@ export const ConditionBlock = ({
                   leftConditionOptions={leftConditionOptions}
                   ConditionOptions={ConditionOptions}
                   position={position}
-                  insertNewConditionToExistingBlock={
-                    insertNewConditionToExistingBlock
+                  insertNewConditionToExistingGroup={
+                    insertNewConditionToExistingGroup
                   }
                   setShowPendingSkeleton={setShowPendingSkeleton}
                 />
 
                 {showPendingSkeleton && showPendingSkeleton.index === index && (
-                  <Skeleton variant="rectangular" style={{width: "100%", height: "3em"}}sx={{ my: 4, mx: 1 }} />
+                  <Skeleton
+                    variant="rectangular"
+                    style={{ width: "100%", height: "3em" }}
+                    sx={{ my: 4, mx: 1 }}
+                  />
                 )}
               </React.Fragment>
             );

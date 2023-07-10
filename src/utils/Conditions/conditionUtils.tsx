@@ -1,3 +1,5 @@
+import { ConditionGroup, ConditionDropdown } from "@Components";
+
 type ConditionsObject = {
   Component: ReactElement;
   id: string;
@@ -8,11 +10,11 @@ type ConditionsObject = {
   conditionValue: string;
 };
 
-type GlobalConditionBlockData = {
+type GlobalConditionGroupData = {
   blockId: string;
   position: number;
   conditions: Array<ConditionsObject>;
-  Component: typeof ConditionBlock;
+  Component: typeof ConditionGroup;
 };
 
 type filterOnType = {

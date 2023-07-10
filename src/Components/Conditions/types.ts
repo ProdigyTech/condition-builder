@@ -1,21 +1,21 @@
 import {  ReactElement } from "react";
-import { ConditionBlock } from "./ConditionBlock";
+import { ConditionGroup } from "./ConditionGroup";
 
 export type ConditionsObject = {
     Component: ReactElement;
     id: string;
-    blockId: string;
+    groupId: string;
     position: number;
     filterOn: string;
     operator: string;
     conditionValue: string;
 };
 
-export type GlobalConditionBlockData = {
-    blockId: string;
+export type GlobalConditionGroupData = {
+    groupId: string;
     position: number;
     conditions: Array<ConditionsObject>;
-    Component: typeof ConditionBlock;
+    Component: typeof ConditionGroup;
 };
 
 export type filterOnType = {
@@ -31,15 +31,15 @@ export type operatorType = {
 export type DefaultConditionObjectType = {
     Component: ReactElement;
     id: string;
-    blockId: string;
+    groupId: string;
     position: number;
     filterOn: filterOnType;
     operator: operatorType;
     conditionValue: string;
 };
 
-export type ConditionBlockProps = {
-    blockId: string;
+export type ConditionGroupProps = {
+    groupId: string;
     conditions: Array<ConditionsObject>;
     updateConditionsArray: UpdateConditionsArrayFunc;
     position: number;
@@ -52,4 +52,4 @@ export type UpdateConditionsArrayFunc = (arg: {
 }) => void;
 
 
-export type AddConditionFunc = (arg: { blockId: string }) => void;
+export type AddConditionFunc = (arg: { groupId: string }) => void;

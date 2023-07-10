@@ -3,9 +3,9 @@ import { Button, Paper } from "@mui/material";
 import React, { useEffect, useState, ReactElement, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useDataContext } from "@Context/DataContext";
-import { ConditionBlock } from "./ConditionBlock";
+import { ConditionGroup } from "./ConditionGroup";
 import {
-  GlobalConditionBlockData,
+  GlobalConditionGroupData,
   ConditionsObject,
   AddConditionFunc,
 } from "./types";
@@ -17,12 +17,12 @@ export const generateDefaultConditionObject = (
   pos,
   leftConditionOptions,
   ConditionOptions,
-  blockId
+  groupId
 ) => {
   const result = {
     Component: ConditionDropdown,
     id: uuidv4(),
-    blockId: blockId,
+    groupId: groupId,
     position: pos,
     filterOn: leftConditionOptions[0],
     operator: ConditionOptions[0],
@@ -32,20 +32,20 @@ export const generateDefaultConditionObject = (
   return result;
 };
 
-const generateEmptyConditionBlock = (pos: number, leftConditionOptions) => {
-  const newBlockId = uuidv4();
+const generateNewConditionGroup = (pos: number, leftConditionOptions) => {
+  const newGroupId = uuidv4();
   return {
-    blockId: newBlockId,
+    groupId: newGroupId,
     position: pos,
     conditions: [
       generateDefaultConditionObject(
         0,
         leftConditionOptions,
         ConditionOptions,
-        newBlockId
+        newGroupId
       ),
     ],
-    Component: ConditionBlock,
+    Component: ConditionGroup,
   };
 };
 
@@ -60,45 +60,44 @@ export const ConditionBuilder: React.FC = () => {
     };
   });
 
-  const [allConditionBlocks, setConditionBlocks] = useState<
-    Array<GlobalConditionBlockData>
+
+  const [conditionGroups, setConditionGroups] = useState<
+    Array<GlobalConditionGroupData>
   >([]);
 
-  // this is the reason why we can't delete the last existing block. Need to rethink this.
+  // this is the reason why we can't delete the last existing group. Need to rethink this.
   useEffect(() => {
-    if (!isLoading && allConditionBlocks.length == 0 && isReady) {
-      setConditionBlocks([
-        generateEmptyConditionBlock(0, leftConditionOptions),
-      ]);
+    if (!isLoading && conditionGroups.length == 0 && isReady) {
+      setConditionGroups([generateNewConditionGroup(0, leftConditionOptions)]);
     }
   }, [
     isLoading,
-    setConditionBlocks,
-    allConditionBlocks.length,
+    setConditionGroups,
+    conditionGroups.length,
     isReady,
     leftConditionOptions,
   ]);
 
   useEffect(() => {
-    if (isReady && allConditionBlocks.length) {
-      applyFilter(allConditionBlocks);
+    if (isReady && conditionGroups.length) {
+      applyFilter(conditionGroups);
     }
-  }, [allConditionBlocks, isReady]);
+  }, [conditionGroups, isReady]);
 
-  const addNewAndBlock = (pos: number, leftConditionOptions) => {
-    setConditionBlocks((existing) => [
+  const addNewAndGroup = (pos: number, leftConditionOptions) => {
+    setConditionGroups((existing) => [
       ...existing,
-      generateEmptyConditionBlock(pos, leftConditionOptions),
+      generateNewConditionGroup(pos, leftConditionOptions),
     ]);
   };
 
-  const addNewConditionToExistingBlock: AddConditionFunc = ({
-    blockId,
+  const addNewConditionToExistingGroup: AddConditionFunc = ({
+    groupId,
     leftConditionOptions,
   }) => {
-    const newConditions = allConditionBlocks.map((condition) => {
+    const newConditions = conditionGroups.map((condition) => {
       let result = condition;
-      if (condition.blockId === blockId) {
+      if (condition.groupId === groupId) {
         result = {
           ...condition,
           conditions: [
@@ -107,7 +106,7 @@ export const ConditionBuilder: React.FC = () => {
               condition.conditions.length,
               leftConditionOptions,
               ConditionOptions,
-              blockId
+              groupId
             ),
           ],
         };
@@ -115,25 +114,25 @@ export const ConditionBuilder: React.FC = () => {
       return result;
     });
 
-    setConditionBlocks(newConditions);
+    setConditionGroups(newConditions);
   };
 
-  const updateConditionsByBlockId = ({
-    blockId,
+  const updateConditionsByGroupId = ({
+    groupId,
     conditionArr,
   }: {
-    blockId: string;
+    groupId: string;
     conditionArr: Array<ConditionsObject>;
   }) => {
-    // the condition array is empty for a specific block/group, all conditions were removed, we need to remove the "block"
+    // the condition array is empty for a specific group, all conditions were removed, we need to remove the "group"
     if (conditionArr.length === 0) {
-      setConditionBlocks((globalConditions) => {
-        return globalConditions.filter((gc) => gc.blockId !== blockId);
+      setConditionGroups((globalConditions) => {
+        return globalConditions.filter((gc) => gc.groupId !== groupId);
       });
     } else {
-      setConditionBlocks((globalConditions) => {
+      setConditionGroups((globalConditions) => {
         return globalConditions.map((gc) => {
-          if (gc.blockId === blockId) {
+          if (gc.groupId === groupId) {
             return {
               ...gc,
               conditions: conditionArr,
@@ -155,20 +154,20 @@ export const ConditionBuilder: React.FC = () => {
           }}
         >
           <>
-            {allConditionBlocks.map(
-              ({ blockId, Component, conditions, ...rest }) => {
+            {conditionGroups.map(
+              ({ groupId, Component: ConditionGroup, conditions, ...rest }) => {
                 return (
-                  <React.Fragment key={`${blockId}-outer`}>
-                    <Component
+                  <React.Fragment key={`${groupId}-outer`}>
+                    <ConditionGroup
                       {...rest}
-                      key={blockId}
-                      blockId={blockId}
+                      key={groupId}
+                      groupId={groupId}
                       conditions={conditions}
-                      addCondition={addNewConditionToExistingBlock}
-                      updateConditionsArray={updateConditionsByBlockId}
+                      addCondition={addNewConditionToExistingGroup}
+                      updateConditionsArray={updateConditionsByGroupId}
                     />
 
-                    {allConditionBlocks.length > 0 && <span> AND </span>}
+                    {conditionGroups.length > 0 && <span> AND </span>}
                   </React.Fragment>
                 );
               }
@@ -176,10 +175,10 @@ export const ConditionBuilder: React.FC = () => {
 
             <Button
               onClick={() =>
-                addNewAndBlock(allConditionBlocks.length, leftConditionOptions)
+                addNewAndGroup(conditionGroups.length, leftConditionOptions)
               }
             >
-              {allConditionBlocks.length === 0 ? "Add Condition + " : "And +"}
+              {conditionGroups.length === 0 ? "Add Condition + " : "And +"}
             </Button>
           </>
         </Paper>

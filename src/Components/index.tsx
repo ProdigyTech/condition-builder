@@ -4,7 +4,7 @@ import { ConditionBuilder } from "./Conditions/index";
 import { Input } from "./Input";
 import { DataLoader } from "./DataLoader";
 import { ConditionDropdown } from "./Conditions/ConditionDropdowns";
-import { ConditionBlock } from "./Conditions/ConditionBlock";
+import { ConditionGroup } from "./Conditions/ConditionGroup";
 
 export {
   Dropdown,
@@ -13,5 +13,5 @@ export {
   Input,
   DataLoader,
   ConditionDropdown,
-  ConditionBlock
+  ConditionGroup,
 };

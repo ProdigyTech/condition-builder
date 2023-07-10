@@ -19,14 +19,14 @@ import { Dropdown } from "../Select";
 
 export const ConditionDropdown = ({
   id,
-  blockId,
+  groupId,
   position,
   filterOn,
   operator,
   leftConditionOptions,
   addCondition,
   onDropdownChange,
-  insertNewConditionToExistingBlock,
+  insertNewConditionToExistingGroup,
   deleteCondition,
   isLast,
   setShowPendingSkeleton,
@@ -91,11 +91,13 @@ export const ConditionDropdown = ({
           label="Value"
           variant="filled"
           error={error}
-          helperText={error &&
-            <>
-              <ErrorOutlineIcon />
-              Value must be a number when using comparison operators
-            </>
+          helperText={
+            error && (
+              <>
+                <ErrorOutlineIcon />
+                Value must be a number when using comparison operators
+              </>
+            )
           }
           onChange={(e) => {
             setInputValue(e.target.value);
@@ -112,10 +114,10 @@ export const ConditionDropdown = ({
           }}
           onClick={() => {
             if (isLast) {
-              addCondition({ blockId, leftConditionOptions });
+              addCondition({ groupId, leftConditionOptions });
             } else {
-              insertNewConditionToExistingBlock({
-                blockId,
+              insertNewConditionToExistingGroup({
+                groupId,
                 insertPosition: position + 1,
               });
             }
@@ -133,7 +135,7 @@ export const ConditionDropdown = ({
             cursor: "pointer",
           }}
           onClick={() =>
-            deleteCondition({ conditionIdToDelete: id, blockId, position })
+            deleteCondition({ conditionIdToDelete: id, groupId, position })
           }
         >
           Delete
