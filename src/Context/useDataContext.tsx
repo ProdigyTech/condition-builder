@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { DataContext } from "./DataContext";
 
-interface DataContextReturnType {
+type DataContextReturnType  = {
   url: string;
   setUrl: (url: string) => void;
   validate: () => void;

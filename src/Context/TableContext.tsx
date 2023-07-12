@@ -6,7 +6,8 @@ import {
   useCallback,
 } from "react";
 import { useDataContext } from "./useDataContext";
-import { GlobalConditionGroupData } from "Components/Conditions/types";
+import { GlobalConditionGroupData } from "../components/conditions/types";
+import { ConditionOperator } from "../components/conditions/shared/index";
 
 type TableProviderProps = React.PropsWithChildren;
 
@@ -107,14 +108,8 @@ export const TableProvider = ({ children }: TableProviderProps) => {
                   id: the specific id of this OR condition.
                   conditionGroupId, (same groupId from the parent)
                   conditionPosition, not used, but the position of the specific or condition within the group. 
-                  filterOn: {  : object responsible telling us what we're filtering on, which left condition dropdown value is selected? 
-                    label: both label and value are the same. 
-                    value: 
-                  },
-                  operator: {  this corresponds to which operator we're using, equal, less than etc. that definition can be found here src/utils/index -> ConditionOptions
-                    label, 
-                    value,
-                  },
+                  filterOn: string responsible telling us what we're filtering on, which left condition dropdown value is selected? 
+                  operator: string this corresponds to which operator we're using, equal, less than etc. that definition can be found here src/utils/index -> ConditionOperators
                   conditionValue: the condition value, a string. This corresponds to the value input in the condition UI
                 },
                 {
@@ -155,14 +150,14 @@ export const TableProvider = ({ children }: TableProviderProps) => {
           // so that if we find a condition that meets some criteria, we stop iterating through the loop.
           return conditions.some((condition) => {
             const { filterOn, operator, conditionValue } = condition;
-            const itemValue = item[filterOn.value];
+            const itemValue = item[filterOn];
 
             if (!conditionValue?.length) {
               return true;
             }
 
-            switch (operator.value) {
-              case "1": // Equals
+            switch (operator) {
+              case ConditionOperator.Equals:
                 if (Number.parseInt(conditionValue)) {
                   return (
                     Number.parseInt(itemValue) ===
@@ -172,21 +167,21 @@ export const TableProvider = ({ children }: TableProviderProps) => {
                   return itemValue === conditionValue;
                 }
 
-              case "2": // Greater than
+              case ConditionOperator.Greater_Than:
                 return (
                   Number.parseInt(itemValue) > Number.parseInt(conditionValue)
                 );
 
-              case "3": // Less than
+              case ConditionOperator.Less_Than:
                 return (
                   Number.parseInt(itemValue) < Number.parseInt(conditionValue)
                 );
 
-              case "4": // Contain
+              case ConditionOperator.Contain:
                 return itemValue.includes(conditionValue);
-              case "5": // Not Contain
+              case ConditionOperator.Not_Contain:
                 return !itemValue.includes(conditionValue);
-              case "6": // Regex
+              case ConditionOperator.Regex:
                 const regex = new RegExp(conditionValue);
                 return regex.test(itemValue);
               default:

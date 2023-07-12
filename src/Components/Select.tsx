@@ -3,29 +3,33 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Box from "@mui/material/Box";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
 
-interface Option {
+type Option = {
   value: string;
   label: string;
-}
+};
 
-interface DropdownProps {
+type onChangeFunc = (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+type DropdownProps = {
   options: Option[];
   label: string;
   id: string;
-}
+  onChange: onChangeFunc;
+  defaultValue: string;
+};
 
 export const Dropdown: React.FC<DropdownProps> = ({
   options,
   label,
   id,
   onChange,
-  defaultValue,
+  defaultValue = "",
 }) => {
-  const [selectValue, setSelectValue] = useState(defaultValue.value);
+  const [selectValue, setSelectValue] = useState(defaultValue);
 
-  const handleChange = (event: SelectChangeEvent) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectValue(event.target.value as string);
 
     if (typeof onChange === "function") {
@@ -36,9 +40,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">{label}</InputLabel>
+        <InputLabel id="">{label}</InputLabel>
         <Select
-          labelId="demo-simple-select-label"
+          labelId=""
           id={id}
           value={selectValue}
           label={label}

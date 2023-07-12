@@ -1,14 +1,25 @@
 import React from "react";
 import { Paper, Typography, Box } from "@mui/material";
+import { styled } from "@mui/system";
 
-interface ErrorBoundaryProps {
+const ErrorBoundaryBox = styled(Box)({
+  position: "fixed",
+  top: "0",
+  left: "0",
+  bottom: "0",
+  right: "0",
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0,0,0,0.5)",
+});
+type ErrorBoundaryProps = {
   children: React.ReactNode;
-}
+};
 
-interface ErrorBoundaryState {
+type ErrorBoundaryState = {
   hasError: boolean;
-  error: string | Error | null;
-}
+  error: string | Error| ErrorEvent;
+};
 
 class ErrorBoundary extends React.Component<
   ErrorBoundaryProps,
@@ -36,11 +47,10 @@ class ErrorBoundary extends React.Component<
 
   handleError = (event: ErrorEvent): void => {
     event.preventDefault();
-    console.error(event)
-
+    console.error(event);
     this.setState({
       hasError: true,
-      error: new Error(event),
+      error: new Error(event.message),
     });
   };
 
@@ -48,16 +58,7 @@ class ErrorBoundary extends React.Component<
     if (this.state.hasError) {
       return (
         <>
-          <Box
-            position="fixed"
-            top="0"
-            left="0"
-            bottom="0"
-            right="0"
-            width="100%"
-            height="100%"
-            backgroundColor="rgba(0,0,0,0.5)"
-          >
+          <ErrorBoundaryBox>
             <Paper
               style={{
                 textAlign: "center",
@@ -74,7 +75,7 @@ class ErrorBoundary extends React.Component<
                 Oops Something went wrong....
               </Typography>
             </Paper>
-          </Box>
+          </ErrorBoundaryBox>
           {this.props.children}
         </>
       );

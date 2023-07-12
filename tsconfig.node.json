@@ -6,12 +6,6 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "jsx": "react-jsx",
-    "paths": {
-      "@Components": ["Components/index"],
-      "@Context/*": ["Context/*"],
-      "@Shared": ["Shared/index"],
-      "@Utils": ["utils/index"]
-    }
   },
   "include": ["vite.config.ts", "src"]
 }

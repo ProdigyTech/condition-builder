@@ -1,7 +1,6 @@
-import { Input } from "@Components";
-import { useDataContext } from "@Context/useDataContext";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { Typography, Stack } from "@mui/material";
+import { Input } from "./index";
+import { useDataContext } from "../context/useDataContext";
+import { Typography } from "@mui/material";
 
 // DataLoader component
 export const DataLoader: React.ElementType = () => {
@@ -21,19 +20,14 @@ export const DataLoader: React.ElementType = () => {
         error={!!error}
         helperText={
           error ? (
-            // Display error message and icon
-            <Stack direction="row" alignItems="center" gap={1}>
-              <ErrorOutlineIcon />
-              <Typography component={"span"}>{error}</Typography>
-            </Stack>
+            // Display error message
+            <Typography component={"span"}>{error}</Typography>
           ) : (
             // Display helper text
-            <Stack direction="row" alignItems="center" gap={1}>
-              <Typography component={"span"}>
-                Insert data url. Returning data MUST be a json array where each
-                element is a key/value pair
-              </Typography>
-            </Stack>
+            <Typography component={"span"}>
+              Insert data url. Returning data MUST be a json array where each
+              element is a key/value pair
+            </Typography>
           )
         }
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,4 +42,3 @@ export const DataLoader: React.ElementType = () => {
     </>
   );
 };
-

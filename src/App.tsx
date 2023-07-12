@@ -1,7 +1,7 @@
 import "./App.css";
-import { DataLoader, Table, ConditionBuilder } from "@Components";
-import { DataProvider } from "@Context/DataContext";
-import { TableProvider } from "@Context/TableContext";
+import { DataLoader, Table, ConditionBuilder } from "./components";
+import { DataProvider } from "./context/DataContext";
+import { TableProvider } from "./context/TableContext";
 import { Grid } from "@mui/material";
 import { styled } from "@mui/system";
 

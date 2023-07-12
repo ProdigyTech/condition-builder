@@ -1,6 +1,6 @@
-import { DataGrid, GridRowsProp, GridColumns } from "@mui/x-data-grid";
+import { DataGrid, GridRowsProp } from "@mui/x-data-grid";
 import { Box, Skeleton, Chip } from "@mui/material";
-import { useTableContext } from "@Context/useTableContext";
+import { useTableContext } from "../context/useTableContext";
 import { ReactElement } from "react";
 
 export const Table: React.FC = (): ReactElement => {
@@ -54,7 +54,7 @@ export const Table: React.FC = (): ReactElement => {
       <DataGrid
         style={{ height: 500 }}
         rows={rows || ([] as GridRowsProp)}
-        columns={columns || ([] as GridColumns)}
+        columns={columns || ([])}
         components={{
           // Use the LoadingSkeleton component as the loading overlay for the DataGrid
           LoadingOverlay: LoadingSkeleton,

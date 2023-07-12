@@ -1,9 +1,9 @@
 import { Button, Paper, Stack } from "@mui/material";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-import { useDataContext } from "@Context/useDataContext";
+import { useDataContext } from "../../context/useDataContext";
 import { GlobalConditionGroupData, AddConditionFunc } from "./types";
-import { useTableContext } from "@Context/useTableContext";
-import { generateConditionOrObject, generateNewConditionGroup } from "@Utils";
+import { useTableContext } from "../../context/useTableContext";
+import { generateConditionOrObject, generateNewConditionGroup } from "../../utils";
 import { ConditionsOrObjectType } from "./types";
 import { styled } from "@mui/system";
 
@@ -61,7 +61,7 @@ export const ConditionBuilder: React.FC = () => {
     if (isReady && conditionGroups.length) {
       applyConditions(conditionGroups);
     }
-  }, [conditionGroups, isReady]);
+  }, [conditionGroups, isReady, applyConditions]);
 
   /**
    *  If our original rows change and are valid, we want to initialize condition groups.
@@ -85,7 +85,7 @@ export const ConditionBuilder: React.FC = () => {
         generateNewConditionGroup(position, leftConditionOptions),
       ]);
     },
-    [setConditionGroups]
+    [setConditionGroups, leftConditionOptions]
   );
 
   /**
@@ -114,7 +114,7 @@ export const ConditionBuilder: React.FC = () => {
         });
       });
     },
-    [setConditionGroups]
+    [setConditionGroups, leftConditionOptions]
   );
 
   /**
@@ -129,13 +129,13 @@ export const ConditionBuilder: React.FC = () => {
   const updateConditionsByGroupId = useCallback(
     ({
       groupId,
-      conditionArr,
+      updatedConditions,
     }: {
       groupId: string;
-      conditionArr: Array<ConditionsOrObjectType>;
+      updatedConditions: Array<ConditionsOrObjectType>;
     }) => {
       // the condition array is empty for a specific group, all conditions were removed, we need to remove the "group"
-      if (conditionArr.length === 0) {
+      if (updatedConditions.length === 0) {
         setConditionGroups((globalConditions) => {
           return globalConditions.filter((gc) => gc.groupId !== groupId);
         });
@@ -145,7 +145,7 @@ export const ConditionBuilder: React.FC = () => {
             if (gc.groupId === groupId) {
               return {
                 ...gc,
-                conditions: conditionArr,
+                conditions: updatedConditions,
               };
             }
             return gc;
@@ -156,6 +156,7 @@ export const ConditionBuilder: React.FC = () => {
     [setConditionGroups]
   );
 
+  // This div doesn't change, so we wrap it in a memo with an empty dependencies array. 
   const StyledConditionsGroupButtonWrapperDiv = useMemo(
     () =>
       styled("div")({
@@ -172,10 +173,11 @@ export const ConditionBuilder: React.FC = () => {
           {conditionGroups.map(
             (
               /* The ConditionGroup component gets attached to the conditionsGroup object on object generation. see generateNewConditionGroup */
-              { groupId, Component: ConditionGroup, conditions, ...rest },
+              { groupId, Component: ConditionGroup, conditions, groupPosition },
               i
             ) => {
-              const isDisabled = i !== conditionGroups.length - 1;
+             /* State to check if the and button is disabled. i.e we show the "AND" button greyed out between groups but active on the last group */
+              const isAndDisabled = i !== conditionGroups.length - 1;
               return (
                 <div
                   key={`${groupId}-outer`}
@@ -183,24 +185,24 @@ export const ConditionBuilder: React.FC = () => {
                 >
                   <Paper elevation={2} sx={{ p: 2 }}>
                     <ConditionGroup
-                      {...rest}
-                      key={groupId}
                       groupId={groupId}
+                      groupPosition={groupPosition}
                       conditions={conditions}
                       addCondition={addNewConditionToExistingGroup}
-                      updateConditionsArray={updateConditionsByGroupId}
+                      updateConditionsByGroupId={updateConditionsByGroupId}
+                      leftConditionOptions={leftConditionOptions}
                     />
                   </Paper>
 
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <StyledConditionsGroupButtonWrapperDiv>
                       <Button
-                        variant={isDisabled ? "text" : "outlined"}
-                        disabled={isDisabled}
+                        variant={isAndDisabled ? "text" : "outlined"}
+                        disabled={isAndDisabled}
                         sx={{ borderRadius: 0, minWidth: 0, py: 0 }}
                         onClick={() => addNewAndGroup(conditionGroups.length)}
                       >
-                        {isDisabled ? "AND" : "+ AND"}
+                        {isAndDisabled ? "AND" : "+ AND"}
                       </Button>
                     </StyledConditionsGroupButtonWrapperDiv>
                   </Stack>

@@ -1,14 +1,14 @@
 import { ElementType } from "react";
 import { ConditionGroup } from "./ConditionGroup";
-import { ConditionOperatorType } from "@Shared";
+import { ConditionOperatorType } from "./shared/index";
 
 export type ConditionsOrObjectType = {
     Component: ElementType;
     id: string;
     groupId: string;
     conditionPosition: number;
-    filterOn: LeftConditionOptionsType;
-    operator: ConditionOperatorType;
+    filterOn: string;
+    operator: string;
     conditionValue: string;
 };
 
@@ -33,17 +33,18 @@ export type OperatorType = {
 export type ConditionGroupProps = {
     groupId: string;
     conditions: Array<ConditionsOrObjectType>;
-    updateConditionsArray: UpdateConditionsArrayFunc;
-    position: number;
+    updateConditionsByGroupId: UpdateConditionsArrayByGroupIdFunc;
+    groupPosition: number;
     addCondition: AddConditionFunc;
+    leftConditionOptions: Array<LeftConditionOptionsType>;
 };
 
-export type UpdateConditionsArrayFunc = (arg: {
-    blockId: string;
-    conditionArr: Array<ConditionsOrObjectType>;
+export type UpdateConditionsArrayByGroupIdFunc = (arg: {
+    groupId: string;
+    updatedConditions: Array<ConditionsOrObjectType>;
 }) => void;
 
 
 export type AddConditionFunc = (arg: { groupId: string, leftConditionOptions: Array<LeftConditionOptionsType> }) => void;
 
-export type generateDefaultConditionObjectFunc = (pos: number, leftConditionOptions: Array<LeftConditionOptionsType>, conditionOptions: Array<ConditionOperatorType>, groupID: string) => ConditionsOrObjectType;
+export type generateDefaultConditionObjectFunc = (pos: number, leftConditionOptions: Array<LeftConditionOptionsType>, ConditionOperators: Array<ConditionOperatorType>, groupID: string) => ConditionsOrObjectType;

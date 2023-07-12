@@ -7,13 +7,5 @@ const rootDir = process.cwd();
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@Components': path.resolve(rootDir, 'src/Components'),
-      '@Shared': path.resolve(rootDir, 'src/Shared'),
-      "@Context": path.resolve(rootDir, 'src/Context'),
-      "@Utils": path.resolve(rootDir, "src/utils")
-    },
-  },
+  plugins: [react()]
 })
