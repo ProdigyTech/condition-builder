@@ -2,15 +2,15 @@
  * Context for Data Management
  *
  * This context provides state and functions related to data management, including
- * loading data from a URL, validation, and tracking dirty state.
+ * loading data from a URL, validation, and tracking dirty state of the url input.
  *
  * Context properties:
  *   - url: The URL to load data from
- *   - setUrl: Function to update the URL
- *   - isLoading: Boolean indicating if data is currently being loaded
+ *   - setUrl: Function to update the URL state
+ *   - isLoading: Boolean indicating if data is currently being fetched from the url
  *   - error: Error message if data loading or validation fails
- *   - validate: Function to trigger data validation and loading
- *   - data: The loaded data
+ *   - validate: Function that validates the URL, making sure it's valid and validates the data from the axios call.
+ *   - data: The loaded data from the URL.
  *   - isUrlValid: Boolean indicating if the URL is valid
  *   - isReady: Boolean indicating if the data is ready for display
  *   - isDirty: Boolean indicating if the input has been modified
@@ -22,34 +22,37 @@ import axios from "axios";
 import { useState, createContext } from "react";
 import { flushSync } from "react-dom";
 
-export interface IDataContext {
+export type IDataContext = {
   url: string;
-  setUrl: (url: string) => void;
+  setUrl: React.Dispatch<React.SetStateAction<string>>;
   isLoading: boolean;
   error: string | null;
   validate: () => void;
-  data: Array<any>;
+  data: unknown[];
   isUrlValid: boolean;
   isReady: boolean;
   isDirty: boolean;
-  setIsDirty: () => void;
-}
+  setIsDirty: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-interface ValidationResult {
+type DataProviderProps = {
+  children: React.ReactNode;
+};
+
+type ValidationResult = {
   isValid: boolean;
-  validationError: string;
-}
+  validationError: string | null;
+};
 
 export const DataContext = createContext<IDataContext | null>(null);
 
-//TODO: Clean up this file add types
-export const DataProvider: React.FC = ({ children }) => {
-  const [url, setUrl] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
+  const [url, setUrl] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState(null);
-  const [isUrlValid, setIsUrlValid] = useState(false);
-  const [isReady, setIsReady] = useState(false);
+  const [data, setData] = useState<unknown[] | null>(null);
+  const [isUrlValid, setIsUrlValid] = useState<boolean>(false);
+  const [isReady, setIsReady] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
 
   const reset = () => {
@@ -64,20 +67,18 @@ export const DataProvider: React.FC = ({ children }) => {
 
   const loadData = (url: string) => {
     setIsReady(false);
-
     axios
       .get(url)
       .then(({ data: responseData }) => {
-        const { isValid, validationError } = isDataValid(responseData);
-
-        if (isValid) {
-          setData(responseData);
-          setIsUrlValid(true);
+        const { isValid: isResponseValid, validationError } = isDataValid(
+          responseData as unknown[]
+        );
+        if (isResponseValid) {
+          setData(responseData as unknown[]);
           setIsReady(true);
         } else {
           setError(validationError || "Invalid data");
           setData([]);
-          setIsUrlValid(false);
         }
       })
       .catch((error) => {
@@ -92,7 +93,7 @@ export const DataProvider: React.FC = ({ children }) => {
   };
 
   // Checks to make sure the data is defined and is in the correct format
-  const isDataValid: ValidationResult = (data) => {
+  const isDataValid: (data: unknown[]) => ValidationResult = (data) => {
     if (!data) {
       return { isValid: false, validationError: "Data is missing" };
     }
@@ -120,6 +121,8 @@ export const DataProvider: React.FC = ({ children }) => {
 
   // Validation function that runs onBlur
   const validate = () => {
+    let error: Error | null = null; // Type annotation for error variable
+
     if (!url.length) {
       return reset();
     }
@@ -127,15 +130,17 @@ export const DataProvider: React.FC = ({ children }) => {
     if (url.length && isDirty) {
       try {
         new URL(url);
-        // don't batch useStates, with the rest, fire immediately flushSync. 
+        // don't batch useStates, with the rest, fire immediately flushSync.
         // resolves issue where filters are sticky when you load another data set from a cached resource
         flushSync(() => {
           setData(null);
           setError(null);
           setIsLoading(true);
+          setIsUrlValid(true);
         });
         loadData(url);
-      } catch (error) {
+      } catch (err) {
+        error = err;
         setError(error.message);
         setIsLoading(false);
         setIsReady(false);
@@ -160,4 +165,3 @@ export const DataProvider: React.FC = ({ children }) => {
     <DataContext.Provider value={contextValue}>{children}</DataContext.Provider>
   );
 };
-

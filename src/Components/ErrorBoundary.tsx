@@ -7,7 +7,7 @@ interface ErrorBoundaryProps {
 
 interface ErrorBoundaryState {
   hasError: boolean;
-  error: Error | null;
+  error: string | Error | null;
 }
 
 class ErrorBoundary extends React.Component<
@@ -22,8 +22,8 @@ class ErrorBoundary extends React.Component<
     };
   }
 
-  static getDerivedStateFromError(e): ErrorBoundaryState {
-    return { hasError: true, error: e.message };
+  static getDerivedStateFromError(e: Error): ErrorBoundaryState {
+    return { hasError: true, error: e };
   }
 
   componentDidMount(): void {

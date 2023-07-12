@@ -1,10 +1,9 @@
 import { Grid, Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
 import { ConditionOptions } from "@Shared";
 import { generateDefaultConditionObject } from "./index";
 import { ConditionGroupProps } from "./types";
 import { useTableContext } from "@Context/useTableContext";
-import { Skeleton } from "@mui/material";
+
 
 export const ConditionGroup = ({
   groupId,

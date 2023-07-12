@@ -1,23 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  Grid,
-  TextField,
-  Button,
-  Paper,
-  Skeleton,
-  Container,
-  Stack,
-  FormHelperText,
-  Box,
-  Typography,
-} from "@mui/material";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { Grid, TextField, Skeleton, Box } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
 import { Dropdown } from "../Select";
 import { ConditionOptions } from "@Shared";
 
-export const ConditionDropdown = ({
+export const ConditionRow = ({
   id,
   groupId,
   conditionPosition,
@@ -109,15 +97,17 @@ export const ConditionDropdown = ({
             style={{
               color: "red",
               cursor: "pointer",
-              fontSize: "2em"
+              fontSize: "2em",
             }}
-            onClick={() =>
-              deleteCondition({
-                conditionIdToDelete: id,
-                groupId,
-                conditionPosition,
-              })
-            }
+            onClick={() => {
+           
+                deleteCondition({
+                  conditionIdToDelete: id,
+                  groupId,
+                  conditionPosition,
+                });
+            
+            }}
           >
             Delete
           </DeleteForeverIcon>

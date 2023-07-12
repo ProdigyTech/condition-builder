@@ -3,7 +3,7 @@ import { Table } from "./Table";
 import { ConditionBuilder } from "./Conditions/index";
 import { Input } from "./Input";
 import { DataLoader } from "./DataLoader";
-import { ConditionDropdown } from "./Conditions/ConditionDropdowns";
+import { ConditionRow } from "./Conditions/ConditionRow";
 import { ConditionGroup } from "./Conditions/ConditionGroup";
 import  ErrorBoundary  from "./ErrorBoundary";
 
@@ -13,7 +13,7 @@ export {
   ConditionBuilder,
   Input,
   DataLoader,
-  ConditionDropdown,
+  ConditionRow,
   ConditionGroup,
   ErrorBoundary,
 };

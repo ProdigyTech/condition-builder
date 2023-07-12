@@ -1,4 +1,4 @@
-import { ConditionDropdown } from "./ConditionDropdowns";
+import { ConditionRow } from "./ConditionRow";
 import { Button, Paper, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -8,31 +8,33 @@ import {
   GlobalConditionGroupData,
   ConditionsObject,
   AddConditionFunc,
+  generateDefaultConditionObjectFunc,
+  operatorType,
 } from "./types";
 
 import { ConditionOptions } from "@Shared";
 import { useTableContext } from "@Context/useTableContext";
 
-export const generateDefaultConditionObject = (
-  pos,
-  leftConditionOptions,
-  ConditionOptions,
-  groupId
-) => {
-  const result = {
-    Component: ConditionDropdown,
-    id: uuidv4(),
-    groupId: groupId,
-    conditionPosition: pos,
-    filterOn: leftConditionOptions[0],
-    operator: ConditionOptions[0],
-    conditionValue: "",
+export const generateDefaultConditionObject: generateDefaultConditionObjectFunc =
+  (
+    pos: number,
+    leftConditionOptions: Array<operatorType>,
+    ConditionOptions: Array<operatorType>,
+    groupId: string
+  ) => {
+    const id: string = uuidv4();
+    return {
+      Component: ConditionRow,
+      id,
+      groupId: groupId,
+      conditionPosition: pos,
+      filterOn: leftConditionOptions[0],
+      operator: ConditionOptions[0],
+      conditionValue: "",
+    };
   };
 
-  return result;
-};
-
-const generateNewConditionGroup = (pos: number, leftConditionOptions) => {
+const generateNewConditionGroup = (pos: number, leftConditionOptions: Array<operatorType>,) => {
   const newGroupId = uuidv4();
   return {
     groupId: newGroupId,
@@ -165,7 +167,10 @@ export const ConditionBuilder: React.FC = () => {
             ) => {
               const isDisabled = i !== conditionGroups.length - 1;
               return (
-                <React.Fragment key={`${groupId}-outer`}>
+                <div
+                  key={`${groupId}-outer`}
+                  className={`condition-group condition-group-${groupId}`}
+                >
                   <Paper elevation={2} sx={{ p: 2 }}>
                     <ConditionGroup
                       {...rest}
@@ -180,7 +185,7 @@ export const ConditionBuilder: React.FC = () => {
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <div style={{ marginBottom: "1em", marginTop: "1em" }}>
                       <Button
-                        variant={isDisabled ? " " : "outlined"}
+                        variant={isDisabled ? "text" : "outlined"}
                         disabled={isDisabled}
                         sx={{ borderRadius: 0, minWidth: 0, py: 0 }}
                         onClick={() =>
@@ -190,11 +195,11 @@ export const ConditionBuilder: React.FC = () => {
                           )
                         }
                       >
-                        AND
+                        {isDisabled ? "AND" : "+ AND"}
                       </Button>
                     </div>
                   </Stack>
-                </React.Fragment>
+                </div>
               );
             }
           )}

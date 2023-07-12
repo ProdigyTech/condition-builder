@@ -32,7 +32,7 @@ export type DefaultConditionObjectType = {
     Component: ReactElement;
     id: string;
     groupId: string;
-    position: number;
+    conditionPosition: number;
     filterOn: filterOnType;
     operator: operatorType;
     conditionValue: string;
@@ -53,3 +53,5 @@ export type UpdateConditionsArrayFunc = (arg: {
 
 
 export type AddConditionFunc = (arg: { groupId: string }) => void;
+
+export type generateDefaultConditionObjectFunc = (pos: number, leftConditionOptions: Array<operatorType>, conditionOptions: Array<operatorType>, groupID: string) => DefaultConditionObjectType;

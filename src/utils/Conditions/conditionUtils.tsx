@@ -1,4 +1,5 @@
-import { ConditionGroup, ConditionDropdown } from "@Components";
+import { ConditionGroup, ConditionRow } from "@Components";
+import { ReactElement } from "react";
 
 type ConditionsObject = {
   Component: ReactElement;
@@ -44,7 +45,7 @@ export const generateDefaultConditionObject = (
   blockId: string
 ) => {
   const result: DefaultConditionObjectType = {
-    Component: ConditionDropdown,
+    Component: ConditionRow,
     id: uuidv4(),
     blockId: blockId,
     position: pos,
