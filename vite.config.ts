@@ -12,7 +12,8 @@ export default defineConfig({
     alias: {
       '@Components': path.resolve(rootDir, 'src/Components'),
       '@Shared': path.resolve(rootDir, 'src/Shared'),
-      "@Context": path.resolve(rootDir, 'src/Context')
+      "@Context": path.resolve(rootDir, 'src/Context'),
+      "@Utils": path.resolve(rootDir, "src/utils")
     },
   },
 })

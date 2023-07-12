@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ElementType } from "react";
 import { Grid, TextField, Skeleton, Box } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
 import { Dropdown } from "../Select";
 import { ConditionOptions } from "@Shared";
 
-export const ConditionRow = ({
+export const ConditionRow: ElementType = ({
   id,
   groupId,
   conditionPosition,
@@ -80,7 +80,7 @@ export const ConditionRow = ({
             }}
             onClick={() => {
               if (isLast) {
-                addCondition({ groupId, leftConditionOptions });
+                addCondition({ groupId });
               } else {
                 insertNewConditionToExistingGroup({
                   groupId,

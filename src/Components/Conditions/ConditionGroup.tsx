@@ -1,6 +1,6 @@
 import { Grid, Stack, Typography } from "@mui/material";
 import { ConditionOptions } from "@Shared";
-import { generateDefaultConditionObject } from "./index";
+import { generateConditionOrObject } from "@Utils";
 import { ConditionGroupProps } from "./types";
 import { useTableContext } from "@Context/useTableContext";
 
@@ -31,7 +31,7 @@ export const ConditionGroup = ({
       return condition;
     });
 
-    const newCondition = generateDefaultConditionObject(
+    const newCondition = generateConditionOrObject(
       insertPosition,
       leftConditionOptions,
       ConditionOptions,

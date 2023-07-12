@@ -1,6 +1,6 @@
 import { Dropdown } from "./Select";
 import { Table } from "./Table";
-import { ConditionBuilder } from "./Conditions/index";
+import { ConditionBuilder } from "./Conditions/ConditionBuilder";
 import { Input } from "./Input";
 import { DataLoader } from "./DataLoader";
 import { ConditionRow } from "./Conditions/ConditionRow";

@@ -1,6 +1,5 @@
 import "./App.css";
-import { DataLoader, Table } from "@Components";
-import { ConditionBuilder } from "./Components/Conditions/";
+import { DataLoader, Table, ConditionBuilder } from "@Components";
 import { DataProvider } from "@Context/DataContext";
 import { TableProvider } from "@Context/TableContext";
 import { Grid } from "@mui/material";

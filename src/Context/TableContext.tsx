@@ -10,7 +10,7 @@ import { GlobalConditionGroupData } from "Components/Conditions/types";
 
 type TableProviderProps = React.PropsWithChildren;
 
-export type columnTypes = {
+type ColumnTypes = {
   field: string;
   headerName: string;
   width: number;
@@ -20,7 +20,7 @@ export type columnTypes = {
 export type ITableContext = {
   rows: unknown[];
   originalRows: unknown[];
-  columns: Array<columnTypes>;
+  columns: Array<ColumnTypes>;
   shouldDisplayGrid: boolean;
   total: number;
   filtered: number;
@@ -31,9 +31,8 @@ export type ITableContext = {
 
 export const TableContext = createContext<ITableContext | null>(null);
 
-
-// The purpose of this context is to transform the data from the data provider for consumption by the table. 
-// and it exposes a method that applies the filters to the data. 
+// The purpose of this context is to transform the data from the data provider for consumption by the table.
+// and it exposes a method that conditions aka filters to the data.
 export const TableProvider = ({ children }: TableProviderProps) => {
   const { isLoading, data, isUrlValid, isReady } = useDataContext();
   // the purpose of original rows is to store the original data set, so if we remove all conditions
@@ -68,14 +67,17 @@ export const TableProvider = ({ children }: TableProviderProps) => {
 
   // we only want to regenerate columns if the data changes or we change loading states
   const columns = useMemo(() => {
+    // if we're in the loading state return an empty array
     if (isLoading) return [];
 
+    // if we have data, we want to pull the keys off of the array of object data.
+    // we're assuming each object will have the same shape therefore we only pull the keys from the first[0] index of the array.
     if (data) {
       const keys = Object.keys(data[0]);
-      return keys.map((k) => {
+      return keys.map((key) => {
         return {
-          field: k,
-          headerName: k,
+          field: key,
+          headerName: key,
           width: 150,
           editable: false,
         };
@@ -146,14 +148,13 @@ export const TableProvider = ({ children }: TableProviderProps) => {
       const filtered = originalRows.filter((item) => {
         // each condition group in the array will return true / false. this is our AND value. we want all condition groups to evaluate to true to display the
         // potential value.
-        return conditionGroups.every((filter) => {
-          const { conditions = [] } = filter;
+        return conditionGroups.every((conditionGroup) => {
+          const { conditions } = conditionGroup;
 
           // this is each individual condition within a group. OR condition. One of these must evaluate to true for the condition to be true. We use some here
-          // so that if we find a condidion that meets some creteria, we stop iterating through the loop.
-
-          return conditions.some((f) => {
-            const { filterOn, operator, conditionValue } = f;
+          // so that if we find a condition that meets some criteria, we stop iterating through the loop.
+          return conditions.some((condition) => {
+            const { filterOn, operator, conditionValue } = condition;
             const itemValue = item[filterOn.value];
 
             if (!conditionValue?.length) {
@@ -189,12 +190,13 @@ export const TableProvider = ({ children }: TableProviderProps) => {
                 const regex = new RegExp(conditionValue);
                 return regex.test(itemValue);
               default:
-                return true;
+                return false;
             }
           });
         });
       });
 
+      // once we have the filtered result of rows, we want to set it.
       setRows(filtered);
     },
     [originalRows]

@@ -7,7 +7,7 @@ import { Typography, Stack } from "@mui/material";
 export const DataLoader: React.ElementType = () => {
   // Access data context
   const { url, setUrl, validate, error, setIsDirty, isDirty } =
-    useDataContext()  ;
+    useDataContext();
 
   return (
     <>
@@ -36,7 +36,7 @@ export const DataLoader: React.ElementType = () => {
             </Stack>
           )
         }
-        onChange={(e) => {
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           // Update URL state
           setUrl(e.target.value);
           // Set isDirty flag if not already set

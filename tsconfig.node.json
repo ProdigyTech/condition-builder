@@ -9,7 +9,8 @@
     "paths": {
       "@Components": ["Components/index"],
       "@Context/*": ["Context/*"],
-      "@Shared": ["Shared/index"]
+      "@Shared": ["Shared/index"],
+      "@Utils": ["utils/index"]
     }
   },
   "include": ["vite.config.ts", "src"]

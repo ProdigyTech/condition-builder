@@ -1,46 +1,38 @@
-import {  ReactElement } from "react";
+import { ElementType } from "react";
 import { ConditionGroup } from "./ConditionGroup";
+import { ConditionOperatorType } from "@Shared";
 
-export type ConditionsObject = {
-    Component: ReactElement;
+export type ConditionsOrObjectType = {
+    Component: ElementType;
     id: string;
     groupId: string;
-    position: number;
-    filterOn: string;
-    operator: string;
+    conditionPosition: number;
+    filterOn: LeftConditionOptionsType;
+    operator: ConditionOperatorType;
     conditionValue: string;
 };
 
 export type GlobalConditionGroupData = {
     groupId: string;
-    position: number;
-    conditions: Array<ConditionsObject>;
+    groupPosition: number;
+    conditions: Array<ConditionsOrObjectType>;
     Component: typeof ConditionGroup;
 };
 
-export type filterOnType = {
+
+export type LeftConditionOptionsType = {
     label: string;
     value: string;
-};
+}
 
-export type operatorType = {
+export type OperatorType = {
     label: string;
     value: string;
-};
-
-export type DefaultConditionObjectType = {
-    Component: ReactElement;
-    id: string;
-    groupId: string;
-    conditionPosition: number;
-    filterOn: filterOnType;
-    operator: operatorType;
-    conditionValue: string;
 };
 
 export type ConditionGroupProps = {
     groupId: string;
-    conditions: Array<ConditionsObject>;
+    conditions: Array<ConditionsOrObjectType>;
     updateConditionsArray: UpdateConditionsArrayFunc;
     position: number;
     addCondition: AddConditionFunc;
@@ -48,10 +40,10 @@ export type ConditionGroupProps = {
 
 export type UpdateConditionsArrayFunc = (arg: {
     blockId: string;
-    conditionArr: Array<ConditionsObject>;
+    conditionArr: Array<ConditionsOrObjectType>;
 }) => void;
 
 
-export type AddConditionFunc = (arg: { groupId: string }) => void;
+export type AddConditionFunc = (arg: { groupId: string, leftConditionOptions: Array<LeftConditionOptionsType> }) => void;
 
-export type generateDefaultConditionObjectFunc = (pos: number, leftConditionOptions: Array<operatorType>, conditionOptions: Array<operatorType>, groupID: string) => DefaultConditionObjectType;
+export type generateDefaultConditionObjectFunc = (pos: number, leftConditionOptions: Array<LeftConditionOptionsType>, conditionOptions: Array<ConditionOperatorType>, groupID: string) => ConditionsOrObjectType;

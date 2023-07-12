@@ -1,9 +1,6 @@
-interface ConditionOptions {
-  value: string;
-  label: string;
-}
 
-export const ConditionOptions = [
+
+export const ConditionOptions: Array<ConditionOperatorType> = [
   {
     label: "Equals",
     value: "1",
@@ -29,3 +26,8 @@ export const ConditionOptions = [
     value: "6",
   },
 ];
+
+ export type ConditionOperatorType = {
+  value: string
+  label: string
+}
