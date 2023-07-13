@@ -54,7 +54,7 @@ export const Table: React.FC = (): ReactElement => {
       <DataGrid
         style={{ height: 500 }}
         rows={rows || ([] as GridRowsProp)}
-        columns={columns || ([])}
+        columns={columns || []}
         components={{
           // Use the LoadingSkeleton component as the loading overlay for the DataGrid
           LoadingOverlay: LoadingSkeleton,

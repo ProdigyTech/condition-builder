@@ -47,7 +47,7 @@ class ErrorBoundary extends React.Component<
 
   handleError = (event: ErrorEvent): void => {
     event.preventDefault();
-    console.error(event);
+    console.error(event.error);
     this.setState({
       hasError: true,
       error: new Error(event.message),

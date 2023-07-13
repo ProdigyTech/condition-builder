@@ -1,3 +1,36 @@
+# Conditions Builder 
+
+## Tech Stack
+ - Typescript v5.x
+ - React v18.x
+ - Vite 
+ - Material UI
+
+ ### Running the project locally
+
+if you're using yarn
+ - yarn install
+ - yarn dev (starts the project)
+ - yarn test - to run unit tests
+
+if you're using npm 
+- npm install
+- npm run dev (starts the project)
+- npm run test (to run unit tests)
+
+
+
+### Improvements I would make 
+- Styling, would use a theme to for consistent colors, fonts etc
+- Error Boundary styling would look better and provide more information as to what went wrong 
+- When errors happen, send them to some service that aggregates errors, like honeybadger, sentry etc. 
+- Flattening the data structure so you don't have to use complicated nested inefficient loops to filter data 
+- Cypress tests, and more unit test coverage
+- Fixing the vite build command,  something was up with my typescript config and the build does exit successfully.  
+
+<details>
+<summary>Click to expand and see info on the condition builder data structure</summary>
+
 ## Conditions Data Structure Explanation
 
 The data structure represents a collection of condition groups, where each group consists of one or more conditions. Here's a breakdown of the structure:
@@ -70,4 +103,5 @@ This data structure allows you to represent complex conditions by organizing the
 ]
 ```
 
+</details>
 </details>

@@ -30,6 +30,20 @@ export type ITableContext = {
   applyConditions: (conditions: Array<GlobalConditionGroupData>) => void;
 };
 
+// builds the row for the data grid
+const rowBuilder = (
+  keys: Array<string>,
+  values: Array<string>,
+  index: number
+) => {
+  let row = { id: index };
+  values.forEach((val, i) => {
+    row = { ...row, [keys[i]]: val };
+  });
+
+  return row;
+};
+
 export const TableContext = createContext<ITableContext | null>(null);
 
 // The purpose of this context is to transform the data from the data provider for consumption by the table.
@@ -42,6 +56,24 @@ export const TableProvider = ({ children }: TableProviderProps) => {
   const [rows, setRows] = useState<unknown[]>([]);
 
   const [shouldDisplayGrid, setShouldDisplayGrid] = useState(false);
+
+  const formatRows = useMemo(() => {
+    if (isLoading) return [];
+
+    if (data) {
+      const formattedRows = data.map((k, i) => {
+        const keys = Object.keys(k);
+        const values = Object.values(k);
+
+        // assuming order is the same between obj,keys and obj.values
+        return rowBuilder(keys, values, i);
+      });
+
+      return formattedRows;
+    }
+
+    return [];
+  }, [data, isLoading]);
 
   useEffect(() => {
     // Update the shouldDisplayGrid flag based on the URL validity
@@ -58,13 +90,12 @@ export const TableProvider = ({ children }: TableProviderProps) => {
 
   useEffect(() => {
     // Update the rows when the formatted rows change or when the original rows are empty
-    if (!originalRows.length && data) {
-      setOriginalRows(data);
+    if (!originalRows.length) {
+      setOriginalRows(formatRows);
+    } else {
+      setRows(formatRows);
     }
-    if (data) {
-      setRows(data);
-    }
-  }, [data, originalRows.length]);
+  }, [formatRows, originalRows.length]);
 
   // we only want to regenerate columns if the data changes or we change loading states
   const columns = useMemo(() => {
@@ -73,7 +104,7 @@ export const TableProvider = ({ children }: TableProviderProps) => {
 
     // if we have data, we want to pull the keys off of the array of object data.
     // we're assuming each object will have the same shape therefore we only pull the keys from the first[0] index of the array.
-    if (data) {
+    if (data?.length) {
       const keys = Object.keys(data[0]);
       return keys.map((key) => {
         return {

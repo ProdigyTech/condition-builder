@@ -26,7 +26,6 @@ export const ConditionBuilder: React.FC = () => {
     originalRows,
   } = useTableContext();
 
-  //todo, do i need this isReady check? might be able to piggyback off isLoading?
   const { isReady } = useDataContext();
 
   // This holds to columns for the "Left condition" dropdown field in the UI.
@@ -51,7 +50,7 @@ export const ConditionBuilder: React.FC = () => {
     if (!isLoading && conditionGroups.length == 0 && isReady) {
       setConditionGroups([generateNewConditionGroup(0, leftConditionOptions)]);
     }
-  }, [isLoading, conditionGroups.length, isReady, leftConditionOptions]);
+  }, [isLoading, conditionGroups, isReady, leftConditionOptions]);
 
   /**
    *  If we're in the ready state - we have valid data
@@ -64,11 +63,9 @@ export const ConditionBuilder: React.FC = () => {
   }, [conditionGroups, isReady, applyConditions]);
 
   /**
-   *  If our original rows change and are valid, we want to initialize condition groups.
-   *  this might not be needed, todo
-   *  TODO: double check impl - why would conditionGroups be an empty array instead of it's initialSate from line 51?
+   *  If our original rows change and are not valid, we want to set conditionGroups to []
+   * 
    */
-
   useEffect(() => {
     if (!originalRows.length) {
       setConditionGroups([]);
