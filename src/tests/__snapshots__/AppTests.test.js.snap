@@ -70,7 +70,7 @@ exports[`it should allow me to apply an AND condition and filter the results 1`]
         class="MuiStack-root css-nen11g-MuiStack-root"
       >
         <div
-          class="condition-group condition-group-fc9fec31-8ecf-405d-b3a5-b86d79989ca7"
+          class="condition-group condition-group-005bad48-8459-47ef-99f2-1dcf55592d6d"
         >
           <div
             class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation2 css-ad7o3g-MuiPaper-root"
@@ -176,14 +176,14 @@ exports[`it should allow me to apply an AND condition and filter the results 1`]
                             role="button"
                             tabindex="0"
                           >
-                            Equals
+                            Contain
                           </div>
                           <input
                             aria-hidden="true"
                             aria-invalid="false"
                             class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
                             tabindex="-1"
-                            value="Equals"
+                            value="Contain"
                           />
                           <svg
                             aria-hidden="true"
@@ -298,7 +298,7 @@ exports[`it should allow me to apply an AND condition and filter the results 1`]
           </div>
         </div>
         <div
-          class="condition-group condition-group-00c6698d-9824-4315-a45f-9eb1307f6cd4"
+          class="condition-group condition-group-1345b987-5b0a-49e2-a02d-cfb17e488c2b"
         >
           <div
             class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation2 css-ad7o3g-MuiPaper-root"
@@ -1103,7 +1103,7 @@ exports[`it should allow me to apply an OR condition and filter the results 1`] 
         class="MuiStack-root css-nen11g-MuiStack-root"
       >
         <div
-          class="condition-group condition-group-2530d85b-17dd-4f4a-a642-756189edab56"
+          class="condition-group condition-group-d8a097a8-3ea3-482e-b1ef-1ab256794642"
         >
           <div
             class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation2 css-ad7o3g-MuiPaper-root"
@@ -2284,7 +2284,7 @@ exports[`it should allow me to apply an OR condition and filter the results 2`] 
         class="MuiStack-root css-nen11g-MuiStack-root"
       >
         <div
-          class="condition-group condition-group-2530d85b-17dd-4f4a-a642-756189edab56"
+          class="condition-group condition-group-d8a097a8-3ea3-482e-b1ef-1ab256794642"
         >
           <div
             class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation2 css-ad7o3g-MuiPaper-root"
@@ -3402,7 +3402,7 @@ exports[`it should allow me to apply conditions 1`] = `
         class="MuiStack-root css-nen11g-MuiStack-root"
       >
         <div
-          class="condition-group condition-group-91098b2d-0f56-4358-a30e-62ec72bb26b4"
+          class="condition-group condition-group-1e104a33-a106-4544-9c70-7ebaad7084c4"
         >
           <div
             class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation2 css-ad7o3g-MuiPaper-root"
@@ -4255,7 +4255,7 @@ exports[`it should render a grid with valid data 1`] = `
         class="MuiStack-root css-nen11g-MuiStack-root"
       >
         <div
-          class="condition-group condition-group-927dc4dc-dc48-4018-88aa-ba795858931f"
+          class="condition-group condition-group-c53a5acb-4d0d-4376-9fc3-7881b7cf28d7"
         >
           <div
             class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation2 css-ad7o3g-MuiPaper-root"

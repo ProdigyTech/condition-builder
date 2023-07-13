@@ -10,7 +10,6 @@ import { GlobalConditionGroupData } from "../components/conditions/types";
 import { ConditionOperator } from "../components/conditions/shared/index";
 import { GridValidRowModel } from "@mui/x-data-grid";
 
-
 type TableProviderProps = React.PropsWithChildren;
 
 type ColumnTypes = {
@@ -185,10 +184,6 @@ export const TableProvider = ({ children }: TableProviderProps) => {
             const { filterOn, operator, conditionValue } = condition;
             const itemValue = item[filterOn];
 
-            if (!conditionValue?.length) {
-              return true;
-            }
-
             switch (operator) {
               case ConditionOperator.Equals:
                 if (Number.parseInt(conditionValue)) {
@@ -215,8 +210,12 @@ export const TableProvider = ({ children }: TableProviderProps) => {
               case ConditionOperator.Not_Contain:
                 return !itemValue.includes(conditionValue);
               case ConditionOperator.Regex:
-                const regex = new RegExp(conditionValue);
-                return regex.test(itemValue);
+                try {
+                  const regex = new RegExp(conditionValue);
+                  return regex.test(itemValue);
+                } catch (e) {
+                  return false;
+                }
               default:
                 return false;
             }

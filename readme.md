@@ -1,37 +1,91 @@
-# Conditions Builder 
+# Conditions Builder
+
+A powerful condition builder for filtering data using complex conditions. This project utilizes a tech stack consisting of Typescript, React, Vite, Material UI, React Testing Library, jsdom, and Jest.
+
+## Table of Contents
+
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Improvements](#improvements)
+- [Data Structure](#data-structure)
 
 ## Tech Stack
- - Typescript v5.x
- - React v18.x
- - Vite 
- - Material UI
 
- ### Running the project locally
+- Typescript v5.x
+- React v18.x
+- Vite
+- Material UI
+- React Testing Library, jsdom, jest
 
-if you're using yarn
- - yarn install
- - yarn dev (starts the project)
- - yarn test - to run unit tests
+## Getting Started
 
-if you're using npm 
-- npm install
-- npm run dev (starts the project)
-- npm run test (to run unit tests)
+Follow these instructions to run the project locally:
 
+### Prerequisites
 
+- Node.js (v16 or higher)
+- npm or Yarn
 
-### Improvements I would make 
-- Styling, would use a theme to for consistent colors, fonts etc
-- Error Boundary styling would look better and provide more information as to what went wrong 
-- When errors happen, send them to some service that aggregates errors, like honeybadger, sentry etc. 
-- Flattening the data structure so you don't have to use complicated nested inefficient loops to filter data 
-- Cypress tests, and more unit test coverage
-- Fixing the vite build command,  something was up with my typescript config and the build does exit successfully.  
+### Installation
 
-<details>
-<summary>Click to expand and see info on the condition builder data structure</summary>
+1. Clone the repository.
+2. Navigate to the project directory.
 
-## Conditions Data Structure Explanation
+If you're using Yarn:
+
+```shell
+yarn install
+```
+
+If you're using npm:
+
+```shell
+npm install
+```
+
+### Running the Project
+
+If you're using Yarn:
+
+```shell
+yarn dev
+```
+
+If you're using npm:
+
+```shell
+npm run dev
+```
+
+### Running Unit Tests
+
+If you're using Yarn:
+
+```shell
+yarn test
+```
+
+If you're using npm:
+
+```shell
+npm run test
+```
+
+## Improvements
+
+Before pushing a build to production, I would make the following improvements:
+
+- Enhance styling for consistent colors, fonts, margins, padding, and overall theme.
+- Improve Error Boundary styling and provide more detailed error information.
+- Implement error tracking by sending errors to an error aggregation service like Honeybadger or Sentry.
+- Flatten the condition data structure to simplify data filtering and improve performance.
+- Increase unit test coverage and fix unit test snapshots by addressing CSS class name generation.
+- Add end-to-end (E2E) tests using Cypress for comprehensive testing.
+- Address the bug or disable the delete button when only one condition exists and you try to delete it. The condition is technically deleted but a new condition is generated due to a useEffect. ConditionBuilder.tsx - line 50 useEffect
+- Fix the Vite build command by checking the TypeScript configuration, right now the build command doesn't execute successfully due to some config issues.
+- Review TypeScript types and ensure correct setup, considering assistance from experienced TypeScript developers if needed.
+
+## Data Structure
 
 The data structure represents a collection of condition groups, where each group consists of one or more conditions. Here's a breakdown of the structure:
 
@@ -47,12 +101,10 @@ The data structure represents a collection of condition groups, where each group
   - `conditionGroupId`: The identifier of the condition group to which the condition belongs.
   - `conditionPosition`: The position of the condition within its parent condition group.
   - `filterOn`: A string specifying the field to be filtered against.
-  - `operator`: A string specifying the operator used for the condition such as equals, contains etc
+  - `operator`: A string specifying the operator used for the condition, such as equals, contains, etc.
   - `conditionValue`: The value used for comparison in the condition.
 
-This data structure allows you to represent complex conditions by organizing them into condition groups. Each condition group represents an "AND" condition, meaning that all conditions within a group must evaluate to true for the group to be considered true. Within each group, individual conditions represent "OR" conditions, where at least one condition must evaluate to true for the group to be considered true.
-
-## Data Structure
+This data structure allows you to represent complex conditions by organizing them into condition groups. Each condition group represents an "AND" condition, meaning that all top-level conditions must evaluate to true for the group to be considered true. Within each group, individual conditions represent "OR" conditions, where at least one condition must evaluate to true for that particular group to be considered true.
 
 <details>
   <summary>Click to expand and see the shape of the data structure</summary>

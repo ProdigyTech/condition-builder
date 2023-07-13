@@ -10,6 +10,11 @@ import {
 import { ConditionsOrObjectType } from "./types";
 import { styled } from "@mui/system";
 
+const StyledConditionsGroupButtonWrapperDiv = styled("div")({
+  marginBottom: "1em",
+  marginTop: "1em",
+});
+
 export const ConditionBuilder: React.FC = () => {
   const [conditionGroups, setConditionGroups] = useState<
     Array<GlobalConditionGroupData>
@@ -66,7 +71,7 @@ export const ConditionBuilder: React.FC = () => {
   }, [conditionGroups, isReady, applyConditions]);
 
   /**
-   *  If our original rows change and are not valid, we want to set conditionGroups to []
+   *  If our original rows change and are not valid, we want to clear out our condition group state.
    *
    */
   useEffect(() => {
@@ -119,7 +124,7 @@ export const ConditionBuilder: React.FC = () => {
 
   /**
    *
-   * This function will update a particular conditionGroups conditions array by its groupId.
+   * This function will update a particular conditionGroup conditions array by its groupId.
    * Requires the condition array to be passed already constructed and a valid groupId. This is passed down as a prop to child
    * components to send the updated conditions array. Since the parent has the context of 'all' the conditions
    * while the child only has access to its specific set of conditions. Separation of concerns between child / parent.
@@ -154,16 +159,6 @@ export const ConditionBuilder: React.FC = () => {
       }
     },
     [setConditionGroups]
-  );
-
-  // This div doesn't change, so we wrap it in a memo with an empty dependencies array.
-  const StyledConditionsGroupButtonWrapperDiv = useMemo(
-    () =>
-      styled("div")({
-        marginBottom: "1em",
-        marginTop: "1em",
-      }),
-    []
   );
 
   return (
