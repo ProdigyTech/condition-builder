@@ -8,6 +8,8 @@ import {
 import { useDataContext } from "./useDataContext";
 import { GlobalConditionGroupData } from "../components/conditions/types";
 import { ConditionOperator } from "../components/conditions/shared/index";
+import { GridValidRowModel } from "@mui/x-data-grid";
+
 
 type TableProviderProps = React.PropsWithChildren;
 
@@ -19,8 +21,8 @@ type ColumnTypes = {
 };
 
 export type ITableContext = {
-  rows: unknown[];
-  originalRows: unknown[];
+  rows: GridValidRowModel[];
+  originalRows: any[];
   columns: Array<ColumnTypes>;
   shouldDisplayGrid: boolean;
   total: number;
@@ -52,8 +54,8 @@ export const TableProvider = ({ children }: TableProviderProps) => {
   const { isLoading, data, isUrlValid, isReady } = useDataContext();
   // the purpose of original rows is to store the original data set, so if we remove all conditions
   // we will see the original data.
-  const [originalRows, setOriginalRows] = useState<unknown[]>([]);
-  const [rows, setRows] = useState<unknown[]>([]);
+  const [originalRows, setOriginalRows] = useState<any[]>([]);
+  const [rows, setRows] = useState<any[]>([]);
 
   const [shouldDisplayGrid, setShouldDisplayGrid] = useState(false);
 
@@ -61,9 +63,9 @@ export const TableProvider = ({ children }: TableProviderProps) => {
     if (isLoading) return [];
 
     if (data) {
-      const formattedRows = data.map((k, i) => {
-        const keys = Object.keys(k);
-        const values = Object.values(k);
+      const formattedRows = data.map((k, i: number) => {
+        const keys: string[] = Object.keys(k);
+        const values: string[] = Object.values(k);
 
         // assuming order is the same between obj,keys and obj.values
         return rowBuilder(keys, values, i);

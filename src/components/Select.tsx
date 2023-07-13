@@ -3,14 +3,14 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Box from "@mui/material/Box";
-import Select from "@mui/material/Select";
+import Select, {SelectChangeEvent} from "@mui/material/Select";
 
 type Option = {
   value: string;
   label: string;
 };
 
-type onChangeFunc = (e: React.ChangeEvent<HTMLInputElement>) => void;
+type onChangeFunc = (e: SelectChangeEvent<string>) => void;
 
 type DropdownProps = {
   options: Option[];
@@ -29,7 +29,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
 }) => {
   const [selectValue, setSelectValue] = useState(defaultValue);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: SelectChangeEvent<string>) => {
     setSelectValue(event.target.value as string);
 
     if (typeof onChange === "function") {

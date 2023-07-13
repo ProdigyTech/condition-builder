@@ -12,13 +12,23 @@ const ErrorBoundaryBox = styled(Box)({
   height: "100%",
   backgroundColor: "rgba(0,0,0,0.5)",
 });
+
+const StyledPaper = styled(Paper)({
+  textAlign: "center",
+  marginTop: "20%",
+  marginLeft: "auto",
+  marginRight: "auto",
+  height: "200px",
+  width: "300px",
+});
+
 type ErrorBoundaryProps = {
   children: React.ReactNode;
 };
 
 type ErrorBoundaryState = {
   hasError: boolean;
-  error: string | Error| ErrorEvent;
+  error: string | Error | ErrorEvent;
 };
 
 class ErrorBoundary extends React.Component<
@@ -29,7 +39,7 @@ class ErrorBoundary extends React.Component<
     super(props);
     this.state = {
       hasError: false,
-      error: null,
+      error: "",
     };
   }
 
@@ -59,22 +69,11 @@ class ErrorBoundary extends React.Component<
       return (
         <>
           <ErrorBoundaryBox>
-            <Paper
-              style={{
-                textAlign: "center",
-                marginTop: "20%",
-                marginLeft: "auto",
-                marginRight: "auto",
-                height: "200px",
-                width: "300px",
-              }}
-              elevation={2}
-              sx={{ p: 2 }}
-            >
+            <StyledPaper elevation={2} sx={{ p: 2 }}>
               <Typography variant="h6" component="h6">
                 Oops Something went wrong....
               </Typography>
-            </Paper>
+            </StyledPaper>
           </ErrorBoundaryBox>
           {this.props.children}
         </>

@@ -28,7 +28,7 @@ export type IDataContext = {
   isLoading: boolean;
   error: string | null;
   validate: () => void;
-  data: unknown[];
+  data: any[];
   isUrlValid: boolean;
   isReady: boolean;
   isDirty: boolean;
@@ -50,7 +50,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   const [url, setUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<unknown[] | null>(null);
+  const [data, setData] = useState<any>(null);
   const [isUrlValid, setIsUrlValid] = useState<boolean>(false);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -71,10 +71,10 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
       .get(url)
       .then(({ data: responseData }) => {
         const { isValid: isResponseValid, validationError } = isDataValid(
-          responseData as unknown[]
+          responseData
         );
         if (isResponseValid) {
-          setData(responseData as unknown[]);
+          setData(responseData);
           setIsReady(true);
         } else {
           setError(validationError || "Invalid data");
@@ -93,7 +93,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   };
 
   // Checks to make sure the data is defined and is in the correct format
-  const isDataValid: (data: unknown[]) => ValidationResult = (data) => {
+  const isDataValid: (data: any) => ValidationResult = (data) => {
     if (!data) {
       return { isValid: false, validationError: "Data is missing" };
     }
@@ -121,8 +121,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
 
   // Validation function that runs onBlur
   const validate = () => {
-    let error: Error | null = null; // Type annotation for error variable
-
+  
     if (!url.length) {
       return reset();
     }
@@ -140,8 +139,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         });
         loadData(url);
       } catch (err) {
-        error = err;
-        setError(error.message);
+        setError((err as Error).message);
         setIsLoading(false);
         setIsReady(false);
       }

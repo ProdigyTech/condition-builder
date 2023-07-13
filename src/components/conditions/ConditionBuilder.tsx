@@ -3,7 +3,10 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useDataContext } from "../../context/useDataContext";
 import { GlobalConditionGroupData, AddConditionFunc } from "./types";
 import { useTableContext } from "../../context/useTableContext";
-import { generateConditionOrObject, generateNewConditionGroup } from "../../utils";
+import {
+  generateConditionOrObject,
+  generateNewConditionGroup,
+} from "../../utils";
 import { ConditionsOrObjectType } from "./types";
 import { styled } from "@mui/system";
 
@@ -64,7 +67,7 @@ export const ConditionBuilder: React.FC = () => {
 
   /**
    *  If our original rows change and are not valid, we want to set conditionGroups to []
-   * 
+   *
    */
   useEffect(() => {
     if (!originalRows.length) {
@@ -90,7 +93,7 @@ export const ConditionBuilder: React.FC = () => {
    *  Adds new condition to an existing group. (Appends)
    */
   const addNewConditionToExistingGroup: AddConditionFunc = useCallback(
-    ({ groupId }) => {
+    ({ groupId }: { groupId: string }) => {
       setConditionGroups((conditionGroups) => {
         return conditionGroups.map((condition) => {
           if (condition.groupId === groupId) {
@@ -153,7 +156,7 @@ export const ConditionBuilder: React.FC = () => {
     [setConditionGroups]
   );
 
-  // This div doesn't change, so we wrap it in a memo with an empty dependencies array. 
+  // This div doesn't change, so we wrap it in a memo with an empty dependencies array.
   const StyledConditionsGroupButtonWrapperDiv = useMemo(
     () =>
       styled("div")({
@@ -173,7 +176,7 @@ export const ConditionBuilder: React.FC = () => {
               { groupId, Component: ConditionGroup, conditions, groupPosition },
               i
             ) => {
-             /* State to check if the and button is disabled. i.e we show the "AND" button greyed out between groups but active on the last group */
+              /* State to check if the and button is disabled. i.e we show the "AND" button greyed out between groups but active on the last group */
               const isAndDisabled = i !== conditionGroups.length - 1;
               return (
                 <div
@@ -198,6 +201,7 @@ export const ConditionBuilder: React.FC = () => {
                         disabled={isAndDisabled}
                         sx={{ borderRadius: 0, minWidth: 0, py: 0 }}
                         onClick={() => addNewAndGroup(conditionGroups.length)}
+                        title={`AND`}
                       >
                         {isAndDisabled ? "AND" : "+ AND"}
                       </Button>

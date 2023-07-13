@@ -28,7 +28,13 @@ export const ConditionGroup = ({
 }: ConditionGroupProps) => {
   // handles the case of inserting new condition to the group, vs appending.
   const insertNewConditionToExistingGroup = useCallback(
-    ({ groupId, insertPosition }) => {
+    ({
+      groupId,
+      insertPosition,
+    }: {
+      groupId: string;
+      insertPosition: number;
+    }) => {
       const updatedConditions = conditions.map((condition, index) => {
         if (index >= insertPosition) {
           return {
@@ -55,7 +61,13 @@ export const ConditionGroup = ({
 
   // this deletes a condition from an array by its condition id.
   const deleteCondition = useCallback(
-    ({ conditionIdToDelete, groupId }) => {
+    ({
+      conditionIdToDelete,
+      groupId,
+    }: {
+      conditionIdToDelete: string;
+      groupId: string;
+    }) => {
       const updatedConditions = conditions
         .filter((condition) => condition.id !== conditionIdToDelete)
         .map((condition, index) => ({

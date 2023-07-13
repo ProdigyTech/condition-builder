@@ -1,5 +1,11 @@
 import React, { useEffect, useState, ElementType } from "react";
-import { Grid, TextField, Skeleton, Box } from "@mui/material";
+import {
+  Grid,
+  TextField,
+  Skeleton,
+  Box,
+  SelectChangeEvent,
+} from "@mui/material";
 import { styled } from "@mui/system";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
@@ -72,7 +78,7 @@ export const ConditionRow: ElementType = ({
           label={`Left Condition`}
           options={leftConditionOptions}
           defaultValue={filterOn}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          onChange={(e: SelectChangeEvent<string>) => {
             // updates condition state for "filterOn" with the new value for the specific condition by id
             onValueChange(e.target.value, "filterOn", id);
           }}
@@ -84,7 +90,7 @@ export const ConditionRow: ElementType = ({
           label={`Operator`}
           options={ConditionOperators}
           defaultValue={operator}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          onChange={(e: SelectChangeEvent<string>) => {
             // updates condition state for "operator" with the new value for the specific condition by id
             onValueChange(e.target.value, "operator", id);
           }}
@@ -107,6 +113,8 @@ export const ConditionRow: ElementType = ({
       <Grid item xs={2}>
         <Box display="flex" justifyContent="flex-end" alignItems="center">
           <StyledAddIcon
+            role={`button`}
+            titleAccess={`Add Or`}
             onClick={() => {
               if (isLast) {
                 // if this button is clicked on the last condition in the group, append a new condition.
@@ -127,6 +135,8 @@ export const ConditionRow: ElementType = ({
           />
 
           <StyledDeleteIcon
+            role={`button`}
+            titleAccess={`Delete`}
             onClick={() => {
               // remove the condition from the conditions array by conditionId and groupId.
               deleteCondition({

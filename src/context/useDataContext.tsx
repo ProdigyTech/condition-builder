@@ -9,7 +9,7 @@ type DataContextReturnType  = {
   setIsDirty: (isDirty: boolean) => void;
   isDirty: boolean;
   isLoading: boolean
-  data: Array<unknown>;
+  data: Array<any>;
   isUrlValid: boolean,
   isReady: boolean,
 }
