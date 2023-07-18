@@ -27,7 +27,7 @@ export type IDataContext = {
   setUrl: React.Dispatch<React.SetStateAction<string>>;
   isLoading: boolean;
   error: string | null;
-  validate: () => void;
+  validateAndLoad: () => void;
   data: any[];
   isUrlValid: boolean;
   isReady: boolean;
@@ -120,9 +120,11 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   };
 
   // Validation function that runs onBlur
-  const validate = () => {
+  const validateAndLoad = () => {
+
+    console.log("here")
   
-    if (!url.length) {
+    if (!url.length && isDirty) {
       return reset();
     }
 
@@ -151,7 +153,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     setUrl,
     isLoading,
     error,
-    validate,
+    validateAndLoad,
     data,
     isUrlValid,
     isReady,

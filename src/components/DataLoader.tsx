@@ -5,7 +5,7 @@ import { Typography } from "@mui/material";
 // DataLoader component
 export const DataLoader: React.ElementType = () => {
   // Access data context
-  const { url, setUrl, validate, error, setIsDirty, isDirty } =
+  const { url, setUrl, validateAndLoad, error, setIsDirty, isDirty } =
     useDataContext();
 
   return (
@@ -13,7 +13,7 @@ export const DataLoader: React.ElementType = () => {
       {/* Input component */}
       <Input
         fullWidth
-        onBlur={validate}
+        onBlur={validateAndLoad}
         value={url}
         id={`data-loader-input`}
         label="Url"

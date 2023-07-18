@@ -27,7 +27,6 @@ export const generateNewConditionGroup = (
         newGroupId
       ),
     ],
-    Component: ConditionGroup,
   };
 };
 
@@ -42,7 +41,6 @@ export const generateConditionOrObject = (
   groupId: string
 ) => {
   const result: ConditionsOrObjectType = {
-    Component: ConditionRow,
     id: uuid(),
     groupId,
     conditionPosition: pos,

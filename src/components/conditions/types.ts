@@ -3,7 +3,6 @@ import { ConditionGroup } from "./ConditionGroup";
 import { ConditionOperatorType } from "./shared/index";
 
 export type ConditionsOrObjectType = {
-    Component: ElementType;
     id: string;
     groupId: string;
     conditionPosition: number;
@@ -16,7 +15,6 @@ export type GlobalConditionGroupData = {
     groupId: string;
     groupPosition: number;
     conditions: Array<ConditionsOrObjectType>;
-    Component: typeof ConditionGroup;
 };
 
 

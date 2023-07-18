@@ -4,6 +4,7 @@ import { ConditionOperators } from "./shared/index";
 import { generateConditionOrObject } from "../../utils";
 import { useCallback } from "react";
 import { ConditionGroupProps } from "./types";
+import { ConditionRow } from "./ConditionRow";
 
 const StyledTypography = styled(Typography)({
   alignItems: "center",
@@ -107,7 +108,7 @@ export const ConditionGroup = ({
       <Grid container>
         {conditions.map(
           (
-            { Component: ConditionRow, id, conditionPosition, ...rest },
+            { id, conditionPosition, ...rest },
             index
           ) => {
             return (

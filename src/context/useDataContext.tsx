@@ -4,7 +4,7 @@ import { DataContext } from "./DataContext";
 type DataContextReturnType  = {
   url: string;
   setUrl: (url: string) => void;
-  validate: () => void;
+  validateAndLoad: () => void;
   error: string | null;
   setIsDirty: (isDirty: boolean) => void;
   isDirty: boolean;

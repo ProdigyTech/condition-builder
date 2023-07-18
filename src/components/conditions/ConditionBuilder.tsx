@@ -9,6 +9,7 @@ import {
 } from "../../utils";
 import { ConditionsOrObjectType } from "./types";
 import { styled } from "@mui/system";
+import { ConditionGroup } from "./ConditionGroup";
 
 const StyledConditionsGroupButtonWrapperDiv = styled("div")({
   marginBottom: "1em",
@@ -168,7 +169,7 @@ export const ConditionBuilder: React.FC = () => {
           {conditionGroups.map(
             (
               /* The ConditionGroup component gets attached to the conditionsGroup object on object generation. see generateNewConditionGroup */
-              { groupId, Component: ConditionGroup, conditions, groupPosition },
+              { groupId, conditions, groupPosition },
               i
             ) => {
               /* State to check if the and button is disabled. i.e we show the "AND" button greyed out between groups but active on the last group */

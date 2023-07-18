@@ -15,7 +15,7 @@ type TableProviderProps = React.PropsWithChildren;
 type ColumnTypes = {
   field: string;
   headerName: string;
-  width: number;
+  flex: number;
   editable: boolean;
 };
 
@@ -111,7 +111,7 @@ export const TableProvider = ({ children }: TableProviderProps) => {
         return {
           field: key,
           headerName: key,
-          width: 150,
+          flex: 1,
           editable: false,
         };
       });
