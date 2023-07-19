@@ -90,10 +90,17 @@ export const ConditionGroup = ({
     (value: string, field: string, id: string) => {
       const updatedConditions = conditions.map((dropdownConditionObject) => {
         if (id === dropdownConditionObject.id) {
-          return {
+          let obj = {
             ...dropdownConditionObject,
             [field]: value,
           };
+
+          if (field === "conditionValue" && value.length > 0) {
+            obj = { ...obj, isValid: true };
+          } else if (field === "conditionValue" && value.length === 0) {
+            obj = { ...obj, isValid: false };
+          }
+          return obj;
         } else {
           return dropdownConditionObject;
         }

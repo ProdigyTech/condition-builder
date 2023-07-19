@@ -181,7 +181,13 @@ export const TableProvider = ({ children }: TableProviderProps) => {
           // this is each individual condition within a group. OR condition. One of these must evaluate to true for the condition to be true. We use some here
           // so that if we find a condition that meets some criteria, we stop iterating through the loop.
           return conditions.some((condition) => {
-            const { filterOn, operator, conditionValue } = condition;
+            const { filterOn, operator, conditionValue, isValid } = condition;
+
+            // we ignore any invalid conditions.
+            if (!isValid) {
+              return true;
+            }
+            
             const itemValue = item[filterOn];
 
             switch (operator) {

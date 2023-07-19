@@ -47,6 +47,7 @@ export const generateConditionOrObject = (
     filterOn: leftConditionOptions[0].value,
     operator: ConditionOperators[0].value,
     conditionValue: "",
+    isValid: false,
   };
   return result;
 };

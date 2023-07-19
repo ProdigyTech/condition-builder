@@ -9,6 +9,7 @@ export type ConditionsOrObjectType = {
     filterOn: string;
     operator: string;
     conditionValue: string;
+    isValid: boolean;
 };
 
 export type GlobalConditionGroupData = {
