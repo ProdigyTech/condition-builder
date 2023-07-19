@@ -291,7 +291,6 @@ export const ConditionBuilder: React.FC = () => {
     [conditionGroups]
   );
 
-  // using useCallback is optional
   const onBeforeCapture = useCallback(() => {
     /*...*/
   }, []);
