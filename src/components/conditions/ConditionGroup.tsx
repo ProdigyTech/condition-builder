@@ -5,6 +5,7 @@ import { generateConditionOrObject } from "../../utils";
 import { useCallback } from "react";
 import { ConditionGroupProps } from "./types";
 import { ConditionRow } from "./ConditionRow";
+import { Draggable } from "react-beautiful-dnd";
 
 const StyledTypography = styled(Typography)({
   alignItems: "center",
@@ -106,41 +107,47 @@ export const ConditionGroup = ({
   return (
     <>
       <Grid container>
-        {conditions.map(
-          (
-            { id, conditionPosition, ...rest },
-            index
-          ) => {
-            return (
-              <Stack
-                direction="row"
-                spacing={5}
-                width={"100%"}
-                key={`${id}-outer`}
-                sx={{ m: 2 }}
-              >
-                {index !== 0 && <StyledTypography>OR</StyledTypography>}
+        {conditions.map(({ id, conditionPosition, ...rest }, index) => {
+          return (
+            <Stack
+              direction="row"
+              spacing={5}
+              width={"100%"}
+              key={`${id}-outer`}
+              sx={{ m: 2 }}
+            >
+              {index !== 0 && <StyledTypography>OR</StyledTypography>}
 
-                <ConditionRow
-                  {...rest}
-                  id={id}
-                  index={index}
-                  groupId={groupId}
-                  addCondition={addCondition}
-                  isLast={conditions.length - 1 === conditionPosition} // is the last condition in a group?
-                  onValueChange={onValueChange}
-                  deleteCondition={deleteCondition}
-                  leftConditionOptions={leftConditionOptions}
-                  ConditionOperators={ConditionOperators}
-                  conditionPosition={conditionPosition} // position of the condition within the group.
-                  insertNewConditionToExistingGroup={
-                    insertNewConditionToExistingGroup
-                  }
-                />
-              </Stack>
-            );
-          }
-        )}
+              <Draggable
+                key={`draggable-${id}`}
+                draggableId={`draggable-${id}`}
+                index={index}
+              >
+                {(provided) => (
+                  <ConditionRow
+                    {...rest}
+                    id={id}
+                    index={index}
+                    groupId={groupId}
+                    addCondition={addCondition}
+                    isLast={conditions.length - 1 === conditionPosition} // is the last condition in a group?
+                    onValueChange={onValueChange}
+                    deleteCondition={deleteCondition}
+                    leftConditionOptions={leftConditionOptions}
+                    ConditionOperators={ConditionOperators}
+                    conditionPosition={conditionPosition} // position of the condition within the group.
+                    insertNewConditionToExistingGroup={
+                      insertNewConditionToExistingGroup
+                    }
+                    draggleProps={provided.draggableProps}
+                    dragHandleProps={provided.dragHandleProps}
+                    innerRef={provided.innerRef}
+                  />
+                )}
+              </Draggable>
+            </Stack>
+          );
+        })}
       </Grid>
     </>
   );

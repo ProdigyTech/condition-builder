@@ -10,7 +10,10 @@ import { styled } from "@mui/system";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
 import { Dropdown } from "../Select";
-import { ConditionOperators, OperatorsToTriggerNumberValidation } from "./shared/index";
+import {
+  ConditionOperators,
+  OperatorsToTriggerNumberValidation,
+} from "./shared/index";
 
 const StyledDeleteIcon = styled(DeleteForeverIcon)({
   color: "red",
@@ -48,12 +51,16 @@ export const ConditionRow: ElementType = ({
   insertNewConditionToExistingGroup,
   deleteCondition,
   isLast,
+  innerRef,
+  draggleProps,
+  dragHandleProps,
+  conditionValue,
 }) => {
   // state for input validation
   const [error, setValidationError] = useState(false);
 
   // state for input value
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(conditionValue);
 
   // state to show the skeleton if we hover over the add button
   const [showPendingSkeleton, setShowPendingSkeleton] = useState(false);
@@ -61,7 +68,8 @@ export const ConditionRow: ElementType = ({
   // useEffect for input validation when dropdown operator changes or value changes
   useEffect(() => {
     if (inputValue.length) {
-      (OperatorsToTriggerNumberValidation.includes(operator)) && isNaN(+inputValue)
+      OperatorsToTriggerNumberValidation.includes(operator) &&
+      isNaN(+inputValue)
         ? setValidationError(true)
         : setValidationError(false);
       return;
@@ -71,7 +79,14 @@ export const ConditionRow: ElementType = ({
   }, [inputValue, setValidationError, operator]);
 
   return (
-    <Grid container spacing={1} alignItems="center">
+    <Grid
+      container
+      spacing={1}
+      alignItems="center"
+      ref={innerRef}
+      {...draggleProps}
+      {...dragHandleProps}
+    >
       <Grid item xs={4}>
         <Dropdown
           id="filterOn"
@@ -101,6 +116,7 @@ export const ConditionRow: ElementType = ({
           id="conditionValue"
           label="Value"
           variant="filled"
+          value={inputValue}
           error={error}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             // sets the input value

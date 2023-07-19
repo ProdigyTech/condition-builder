@@ -10,6 +10,8 @@ import {
 import { ConditionsOrObjectType } from "./types";
 import { styled } from "@mui/system";
 import { ConditionGroup } from "./ConditionGroup";
+import { DragDropContext } from "react-beautiful-dnd";
+import { Droppable } from "react-beautiful-dnd";
 
 const StyledConditionsGroupButtonWrapperDiv = styled("div")({
   marginBottom: "1em",
@@ -162,8 +164,129 @@ export const ConditionBuilder: React.FC = () => {
     [setConditionGroups]
   );
 
+  const updateConditionGroupsOnDragEnd = useCallback(
+    (newCondition, oldCondition, oldGroupIndex, newGroupIndex) => {
+      const conditionsToReShuffle = conditionGroups[newGroupIndex].conditions;
+      const updatedConditions = conditionsToReShuffle.map(
+        (condition, index) => {
+          if (index >= newCondition.conditionPosition) {
+            return {
+              ...condition,
+              conditionPosition: condition.conditionPosition + 1, // if we insert, we want to reshuffle positions at the insert point
+            };
+          }
+          return condition;
+        }
+      );
+      // we insert the new conditionObject at the specific insert point.
+      updatedConditions.splice(newCondition.conditionPosition, 0, newCondition);
+
+      const conditionsToFilter = conditionGroups[oldGroupIndex].conditions;
+
+      const filteredConditions = conditionsToFilter
+        .filter((c) => c.conditionPosition !== oldCondition.conditionPosition)
+        .map((c, i) => {
+          return { ...c, conditionPosition: i };
+        });
+
+      const newConditions = [...conditionGroups];
+
+      newConditions[oldGroupIndex].conditions = filteredConditions;
+      newConditions[newGroupIndex].conditions = updatedConditions;
+
+      return newConditions;
+    },
+    [conditionGroups]
+  );
+
+  const onDragEnd = useCallback(
+    (e) => {
+      const { destination, source } = e;
+
+      if (destination.droppableId === source.droppableId) {
+        const oldGroupIndex = conditionGroups.findIndex(
+          (group) => group.groupId === source.droppableId
+        );
+
+        const cond = conditionGroups[oldGroupIndex].conditions;
+
+        const foundCondition = cond[source.index];
+
+        const fil = cond.filter((c) => c.conditionPosition !== source.index);
+
+        const newCondition = {
+          ...foundCondition,
+          conditionPosition: destination.index,
+        };
+
+        // we insert the new conditionObject at the specific insert point.
+        fil.splice(newCondition.conditionPosition, 0, newCondition);
+
+        const reIndexed = fil.map((c, i) => {
+          return { ...c, conditionPosition: i };
+        });
+
+        const cloned = [...conditionGroups]
+
+        cloned[oldGroupIndex].conditions = reIndexed;
+
+        setConditionGroups(cloned);
+      } else {
+        const oldGroupIndex = conditionGroups.findIndex(
+          (group) => group.groupId === source.droppableId
+        );
+
+        const newGroupIndex = conditionGroups.findIndex(
+          (group) => group.groupId === destination.droppableId
+        );
+
+        const foundGroup = conditionGroups.find(
+          (group) => group.groupId === source.droppableId
+        );
+
+        const foundCondition = foundGroup.conditions[source.index];
+
+        const newCondition = {
+          ...foundCondition,
+          groupId: destination.droppableId,
+          conditionPosition: destination.index,
+        };
+
+        const newConditionGroups = updateConditionGroupsOnDragEnd(
+          newCondition,
+          foundCondition,
+          oldGroupIndex,
+          newGroupIndex
+        );
+
+        setConditionGroups(newConditionGroups);
+      }
+    },
+    [conditionGroups]
+  );
+
+  // using useCallback is optional
+  const onBeforeCapture = useCallback(() => {
+    /*...*/
+  }, []);
+  const onBeforeDragStart = useCallback(() => {
+    /*...*/
+  }, []);
+  const onDragStart = useCallback(() => {
+    /*...*/
+  }, []);
+  const onDragUpdate = useCallback(() => {
+    /*...*/
+  }, []);
+
   return (
-    <>
+    <DragDropContext
+      onBeforeCapture={onBeforeCapture}
+      onBeforeDragStart={onBeforeDragStart}
+      onDragStart={onDragStart}
+      onDragUpdate={onDragUpdate}
+      onDragEnd={onDragEnd}
+    >
       {isReady ? (
         <Stack>
           {conditionGroups.map(
@@ -180,14 +303,31 @@ export const ConditionBuilder: React.FC = () => {
                   className={`condition-group condition-group-${groupId}`}
                 >
                   <Paper elevation={2} sx={{ p: 2 }}>
-                    <ConditionGroup
-                      groupId={groupId}
-                      groupPosition={groupPosition}
-                      conditions={conditions}
-                      addCondition={addNewConditionToExistingGroup}
-                      updateConditionsByGroupId={updateConditionsByGroupId}
-                      leftConditionOptions={leftConditionOptions}
-                    />
+                    <Droppable droppableId={groupId} type="AND">
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                        >
+                          <ConditionGroup
+                            style={{
+                              backgroundColor: snapshot.isDraggingOver
+                                ? "blue"
+                                : "grey",
+                            }}
+                            groupId={groupId}
+                            groupPosition={groupPosition}
+                            conditions={conditions}
+                            addCondition={addNewConditionToExistingGroup}
+                            updateConditionsByGroupId={
+                              updateConditionsByGroupId
+                            }
+                            leftConditionOptions={leftConditionOptions}
+                          />
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
                   </Paper>
 
                   <Stack direction="row" alignItems="center" spacing={1}>
@@ -211,6 +351,6 @@ export const ConditionBuilder: React.FC = () => {
       ) : (
         <></>
       )}
-    </>
+    </DragDropContext>
   );
 };
