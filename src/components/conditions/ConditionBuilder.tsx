@@ -203,6 +203,10 @@ export const ConditionBuilder: React.FC = () => {
     (e) => {
       const { destination, source } = e;
 
+      if (!destination?.droppableId || !source?.droppableId) {
+        return;
+      }
+
       if (destination.droppableId === source.droppableId) {
         const oldGroupIndex = conditionGroups.findIndex(
           (group) => group.groupId === source.droppableId
@@ -226,11 +230,21 @@ export const ConditionBuilder: React.FC = () => {
           return { ...c, conditionPosition: i };
         });
 
-        const cloned = [...conditionGroups]
+        const cloned = [...conditionGroups];
 
         cloned[oldGroupIndex].conditions = reIndexed;
 
-        setConditionGroups(cloned);
+        const shouldCleanUp = cloned.some((c) => c?.conditions?.length === 0);
+
+        if (shouldCleanUp) {
+          const cleanedUp = cloned
+            .filter((c) => c?.conditions?.length > 0)
+            .map((c, i) => ({ ...c, groupPosition: i }));
+
+          setConditionGroups(cleanedUp);
+        } else {
+          setConditionGroups(cloned);
+        }
       } else {
         const oldGroupIndex = conditionGroups.findIndex(
           (group) => group.groupId === source.droppableId
@@ -259,7 +273,19 @@ export const ConditionBuilder: React.FC = () => {
           newGroupIndex
         );
 
-        setConditionGroups(newConditionGroups);
+        const shouldCleanUp = newConditionGroups.some(
+          (c) => c?.conditions?.length === 0
+        );
+
+        if (shouldCleanUp) {
+          const cleanedUp = newConditionGroups
+            .filter((c) => c?.conditions?.length > 0)
+            .map((c, i) => ({ ...c, groupPosition: i }));
+
+          setConditionGroups(cleanedUp);
+        } else {
+          setConditionGroups(newConditionGroups);
+        }
       }
     },
     [conditionGroups]

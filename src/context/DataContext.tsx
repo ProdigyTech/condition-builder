@@ -70,9 +70,8 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     axios
       .get(url)
       .then(({ data: responseData }) => {
-        const { isValid: isResponseValid, validationError } = isDataValid(
-          responseData
-        );
+        const { isValid: isResponseValid, validationError } =
+          isDataValid(responseData);
         if (isResponseValid) {
           setData(responseData);
           setIsReady(true);
@@ -121,9 +120,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
 
   // Validation function that runs onBlur
   const validateAndLoad = () => {
-
-    console.log("here")
-  
     if (!url.length && isDirty) {
       return reset();
     }
